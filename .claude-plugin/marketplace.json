@@ -1,0 +1,11 @@
+{
+  "name": "liti-architects",
+  "owner": { "name": "Liti Engineering" },
+  "plugins": [
+    {
+      "name": "liti-architects",
+      "source": ".",
+      "description": "Reviewer agents for production hardening, audit compliance, and analytics coverage"
+    }
+  ]
+}
