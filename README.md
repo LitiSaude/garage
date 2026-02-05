@@ -7,7 +7,7 @@ A shared repository where the Liti team organizes, shares, and collaboratively i
 Install the plugin from the Claude Code marketplace:
 
 ```
-claude plugin add liti-architects
+claude plugin add liti-garage
 ```
 
 Or clone the repository and register it locally:
@@ -38,7 +38,7 @@ claude plugin add ./garage
 ## Project structure
 
 ```
-skills/           # Skill definitions (user-facing commands)
+skills/           # Skill definitions (user-facing commands, one SKILL.md per directory)
 agents/           # Specialized agent prompts used by skills
 .claude-plugin/   # Plugin metadata and marketplace config
 ```

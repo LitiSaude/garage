@@ -1,11 +1,20 @@
 {
-  "name": "liti-architects",
-  "owner": { "name": "Liti Engineering" },
+  "name": "liti-garage",
+  "metadata": {
+    "description": "Skills and agents shared by the Liti engineering team"
+  },
+  "owner": {
+    "name": "Liti Engineering"
+  },
   "plugins": [
     {
-      "name": "liti-architects",
-      "source": ".",
-      "description": "Reviewer agents for production hardening, audit compliance, and analytics coverage"
+      "name": "liti-garage",
+      "description": "Shared skills and agents for the Liti engineering team",
+      "version": "1.1.0",
+      "source": "./",
+      "author": {
+        "name": "Liti Engineering"
+      }
     }
   ]
 }
