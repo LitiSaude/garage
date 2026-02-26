@@ -34,6 +34,7 @@ claude plugin add ./garage
 | **Audit Compliance** | Backend | Soft deletes, change history, actor attribution |
 | **Analytics Coverage** | Frontend/Mobile | Funnel coverage, event naming & taxonomy, event properties |
 | **Plan Requirements** | Any | Pre-coding requirements checklist |
+| **Business Readiness** | Any | Rollout planning, dependency resilience, multi-tenant impact, data consent, migration |
 
 ## Project structure
 

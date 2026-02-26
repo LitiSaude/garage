@@ -13,12 +13,14 @@ Run the appropriate reviewer agents based on the mode and stack.
 
 **When**: Before coding starts. The user has a feature description or plan draft.
 
-**What it does**: Launches a single agent using `@agents/plan-requirements-reviewer.md`. This agent reads the feature description / plan, detects the stack, and produces a requirements checklist — things the plan must address before implementation begins. No code scanning.
+**What it does**: Launches two agents in parallel — one for engineering standards (`@agents/plan-requirements-reviewer.md`) and one for business/product readiness (`@agents/business-readiness-reviewer.md`). Together they produce a comprehensive review covering both technical requirements and business blind spots. No code scanning.
 
 **Behavior**:
 1. Read the user's feature description or plan draft from context.
-2. Launch one Task agent with `subagent_type: "general-purpose"` using the prompt from `@agents/plan-requirements-reviewer.md`, passing the feature description and any plan content.
-3. Return the checklist directly.
+2. Launch two Task agents **in parallel** with `subagent_type: "general-purpose"`:
+   - One with the prompt from `@agents/plan-requirements-reviewer.md` (engineering standards)
+   - One with the prompt from `@agents/business-readiness-reviewer.md` (business/product readiness)
+3. Merge results into a single report.
 
 ## Mode: `code`
 
@@ -54,14 +56,21 @@ Run the appropriate reviewer agents based on the mode and stack.
 
 ## Stack: [Backend / Frontend / Full Stack]
 
-## Requirements to Address
+## Engineering Requirements
 
 ### [Category]
 - ⚠️ **[Requirement]**: Why it applies and what the plan should specify
 - ✅ **[Requirement]**: Already addressed in the plan
 
+## Business & Product Readiness
+
+### [Pillar Name]
+- ⚠️ **[Requirement]**: Why it applies and what the plan should specify
+- ✅ **[Requirement]**: Already addressed in the plan
+
 ## Summary
-- **Missing from plan**: N items
+- **Engineering gaps**: N items
+- **Business/product gaps**: N items
 - **Already covered**: N items
 ```
 

@@ -10,7 +10,7 @@
     {
       "name": "liti-garage",
       "description": "Shared skills and agents for the Liti engineering team",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "source": "./",
       "author": {
         "name": "Liti Engineering"
