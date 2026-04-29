@@ -33,8 +33,10 @@ claude plugin add ./garage
 | **Production Hardening** | Backend | Resilience, idempotency, durability |
 | **Audit Compliance** | Backend | Soft deletes, change history, actor attribution |
 | **Analytics Coverage** | Frontend/Mobile | Funnel coverage, event naming & taxonomy, event properties |
+| **Security Controls** | Backend + Frontend/Mobile | OWASP / NIST / API Top 10, AuthN/AuthZ, injection, secrets, crypto, privacy/PII, supply chain |
 | **Plan Requirements** | Any | Pre-coding requirements checklist |
 | **Business Readiness** | Any | Rollout planning, dependency resilience, multi-tenant impact, data consent, migration |
+| **Security Threat Modeling** | Any (plan-time) | Trust boundaries, AuthN/AuthZ design, data classification, supply chain trust, key management, abuse resistance |
 
 ## Project structure
 

@@ -13,13 +13,14 @@ Run the appropriate reviewer agents based on the mode and stack.
 
 **When**: Before coding starts. The user has a feature description or plan draft.
 
-**What it does**: Launches two agents in parallel — one for engineering standards (`@agents/plan-requirements-reviewer.md`) and one for business/product readiness (`@agents/business-readiness-reviewer.md`). Together they produce a comprehensive review covering both technical requirements and business blind spots. No code scanning.
+**What it does**: Launches three agents in parallel — one for engineering standards (`@agents/plan-requirements-reviewer.md`), one for business/product readiness (`@agents/business-readiness-reviewer.md`), and one for security & threat modeling (`@agents/security-threat-modeling-reviewer.md`). Together they produce a comprehensive review covering technical requirements, business blind spots, and design-level security gaps. No code scanning.
 
 **Behavior**:
 1. Read the user's feature description or plan draft from context.
-2. Launch two Task agents **in parallel** with `subagent_type: "general-purpose"`:
+2. Launch three Task agents **in parallel** with `subagent_type: "general-purpose"`:
    - One with the prompt from `@agents/plan-requirements-reviewer.md` (engineering standards)
    - One with the prompt from `@agents/business-readiness-reviewer.md` (business/product readiness)
+   - One with the prompt from `@agents/security-threat-modeling-reviewer.md` (security & threat modeling)
 3. Merge results into a single report.
 
 ## Mode: `code`
@@ -38,12 +39,16 @@ Run the appropriate reviewer agents based on the mode and stack.
 
 3. **Launch reviewers in parallel** using the Task tool with `subagent_type: "general-purpose"`:
 
-   **For backend code**, launch two parallel agents:
+   **For backend code**, launch three parallel agents:
    - One with the prompt from `@agents/production-hardening-reviewer.md` scoped to the target files
    - One with the prompt from `@agents/audit-compliance-reviewer.md` scoped to the target files
+   - One with the prompt from `@agents/security-controls-reviewer.md` scoped to the target backend files (backend pillars only)
 
-   **For frontend/mobile code**, launch one agent:
-   - With the prompt from `@agents/analytics-coverage-reviewer.md` scoped to the target files
+   **For frontend/mobile code**, launch two parallel agents:
+   - One with the prompt from `@agents/analytics-coverage-reviewer.md` scoped to the target files
+   - One with the prompt from `@agents/security-controls-reviewer.md` scoped to the target frontend files (frontend pillars only)
+
+   **For mixed stack**, launch all four agents — `production-hardening`, `audit-compliance`, `analytics-coverage`, and a single `security-controls-reviewer` invocation that covers both backend and frontend pillars across the full file scope.
 
 4. **Merge results**: Combine the outputs from all agents into a single report.
 
@@ -68,9 +73,16 @@ Run the appropriate reviewer agents based on the mode and stack.
 - ⚠️ **[Requirement]**: Why it applies and what the plan should specify
 - ✅ **[Requirement]**: Already addressed in the plan
 
+## Security & Threat Model
+
+### [Pillar Name]
+- ⚠️ **[Requirement]**: Why it applies and what the plan should specify
+- ✅ **[Requirement]**: Already addressed in the plan
+
 ## Summary
 - **Engineering gaps**: N items
 - **Business/product gaps**: N items
+- **Security gaps**: N items
 - **Already covered**: N items
 ```
 
@@ -91,6 +103,11 @@ Run the appropriate reviewer agents based on the mode and stack.
 
 ## Audit Compliance
 [Output from audit-compliance-reviewer]
+
+---
+
+## Security Controls
+[Output from security-controls-reviewer]
 
 ---
 
