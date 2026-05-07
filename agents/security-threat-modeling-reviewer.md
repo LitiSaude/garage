@@ -56,7 +56,13 @@ You do NOT scan code. You read the feature description and/or plan draft and ide
 
 ## Output Format
 
+When dispatched by `/build`, your prompt may include a `## Sprint Contract` section listing design-time security `done_criteria`. Report verdict per-row before your free-form review.
+
 ```
+## Sprint Contract Verdict (if present)
+- dc-XXX — <citation> — pass | fail
+  Evidence: <plan reference> or "missing"
+
 # Security & Threat Model Review: [Feature Name]
 
 ## Applicable Pillars

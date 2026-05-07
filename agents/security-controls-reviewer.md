@@ -182,7 +182,13 @@ Apply these pillars when frontend/mobile files are in scope (`.tsx`, `.jsx`, `.t
 
 ## Output Format
 
+When dispatched by `/build`, your prompt may include a `## Sprint Contract` section listing security `done_criteria` (e.g., "rate limit on POST /api/v1/x is enforced"). Report verdict per-row before your pillar findings.
+
 ```
+## Sprint Contract Verdict (if present)
+- dc-XXX — <citation> — pass | fail
+  Evidence: <file:line> or "missing"
+
 ## [Pillar Name]
 
 ### [Severity: HIGH/MEDIUM/LOW] Description

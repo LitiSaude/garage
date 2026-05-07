@@ -1,11 +1,11 @@
 {
   "name": "liti-garage",
-  "description": "Shared skills and agents for the Liti engineering team",
-  "version": "1.3.0",
+  "description": "Shared skills and agents for the Liti engineering team — pre-write compliance harness plus post-write review",
+  "version": "2.0.0",
   "author": {
     "name": "Liti Engineering"
   },
   "repository": "https://github.com/liti/garage",
   "license": "MIT",
-  "keywords": ["skills", "agents", "code-review", "production-hardening", "audit-compliance", "analytics", "security", "compliance"]
+  "keywords": ["skills", "agents", "code-review", "production-hardening", "audit-compliance", "analytics", "security", "compliance", "pygeia", "harness", "scaffold", "tdd", "partner-scope"]
 }

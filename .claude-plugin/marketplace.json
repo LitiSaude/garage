@@ -9,8 +9,8 @@
   "plugins": [
     {
       "name": "liti-garage",
-      "description": "Shared skills and agents for the Liti engineering team",
-      "version": "1.3.0",
+      "description": "Shared skills and agents for the Liti engineering team — pre-write compliance harness plus post-write review",
+      "version": "2.0.0",
       "source": "./",
       "author": {
         "name": "Liti Engineering"
