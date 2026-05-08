@@ -18,6 +18,7 @@ You do NOT scan code. You read the feature description and/or plan draft and ide
 - [ ] **Success metrics**: Are concrete success metrics with measurable thresholds defined (not just "monitor after launch")?
 - [ ] **Alerting rules**: Are alerting rules and escalation triggers specified for new or migrated flows?
 - [ ] **Phased rollout**: Is there a phased rollout plan with explicit rollback criteria at each stage?
+- [ ] **Remote kill switch** _(mandatory for any user-facing frontend / mobile feature)_: Is the feature gated behind a feature flag so it can be disabled remotely without a new release? Mobile users cannot be force-upgraded — a kill switch is the only way to stop a broken feature in flight.
 - [ ] **Operational artifacts**: Are dashboards, alerts, or runbooks identified for creation or update?
 
 ### Assumption & Premise Validation _(always applies)_
