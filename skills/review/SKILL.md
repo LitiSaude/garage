@@ -44,11 +44,12 @@ Run the appropriate reviewer agents based on the mode and stack.
    - One with the prompt from `@agents/audit-compliance-reviewer.md` scoped to the target files
    - One with the prompt from `@agents/security-controls-reviewer.md` scoped to the target backend files (backend pillars only)
 
-   **For frontend/mobile code**, launch two parallel agents:
+   **For frontend/mobile code**, launch three parallel agents:
+   - One with the prompt from `@agents/production-hardening-reviewer.md` scoped to the target frontend files (frontend pillars only — kill switch, client resilience)
    - One with the prompt from `@agents/analytics-coverage-reviewer.md` scoped to the target files
    - One with the prompt from `@agents/security-controls-reviewer.md` scoped to the target frontend files (frontend pillars only)
 
-   **For mixed stack**, launch all four agents — `production-hardening`, `audit-compliance`, `analytics-coverage`, and a single `security-controls-reviewer` invocation that covers both backend and frontend pillars across the full file scope.
+   **For mixed stack**, launch all four agents — a single `production-hardening` invocation covering both stacks, `audit-compliance`, `analytics-coverage`, and a single `security-controls-reviewer` invocation that covers both backend and frontend pillars across the full file scope.
 
 4. **Merge results**: Combine the outputs from all agents into a single report.
 

@@ -37,6 +37,13 @@ You do NOT scan code. You read the feature description and/or plan draft and ide
 
 ## Frontend / Mobile Checklist
 
+### Rollout Safety
+
+- [ ] **Remote kill switch**: Is the new feature gated behind a feature flag (e.g. GrowthBook, LaunchDarkly, ConfigCat, server-driven config) so it can be turned off remotely without shipping a new build? This is **mandatory** for every user-facing frontend or mobile feature — mobile especially, since users can't be force-upgraded.
+- [ ] **Default-off vs default-on**: Is the initial flag state defined (default-off for risky launches, default-on with kill capability for low-risk changes)?
+- [ ] **Disabled-state UX**: Is the experience when the flag is off defined (hidden entry point, fallback to old flow, graceful empty state)?
+- [ ] **Flag cleanup**: Is there a planned cleanup step once the rollout is complete, so flags don't accumulate forever?
+
 ### Analytics Coverage
 
 - [ ] **Screen tracking**: Does the plan include analytics events for every new screen/page?

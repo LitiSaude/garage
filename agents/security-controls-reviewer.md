@@ -48,19 +48,25 @@ Apply these pillars when backend files are in scope (`.py`, `.go`, `.java`, `.rs
 - `logger.info(f"... {settings.SECRET_KEY} ...")` and similar
 - Exception handlers that include the request body or env in the log payload
 
-### 4. Cryptography & TLS _(when crypto / HTTP clients are touched)_
+### 4. Cryptography & TLS _(only when the diff itself introduces crypto primitives, signatures, JWT verification, or new outbound HTTP/TLS clients — skip entirely otherwise)_
 
-**What to look for:**
-- Weak/broken algorithms: MD5, SHA1 for security purposes, DES, 3DES, ECB mode
-- Hand-rolled crypto, custom JWT verification logic, custom HMAC comparison
-- TLS verification disabled, cert pinning bypass
-- Static IVs, predictable randomness (`random` module instead of `secrets`)
+This pillar is **opt-in**. Most features do not need crypto review. Do not flag the absence of HMAC, signing, or encryption on regular CRUD/UI/data work — our system relies on session auth and TLS at the edges, not per-payload signing.
+
+**What to look for (only when crypto code actually appears in the diff):**
+- Weak/broken algorithms in newly added code: MD5, SHA1 for security purposes, DES, 3DES, ECB mode
+- Hand-rolled crypto, custom JWT verification logic, or custom HMAC comparison **that the diff is introducing**
+- TLS verification disabled (`verify=False`) or cert pinning bypassed
+- Static IVs, predictable randomness (`random` module instead of `secrets`) for security-sensitive values
 
 **Anti-patterns to flag:**
-- `verify=False` in `requests`/`httpx` calls
+- `verify=False` in `requests`/`httpx` calls added in this diff
 - `hashlib.md5(password)` or similar for password / token derivation
 - Use of `random.randint` / `random.choice` for tokens, IDs, or anything security-sensitive
 - AES with `MODE_ECB` or hardcoded IV
+
+**Do NOT flag:**
+- The absence of request signing, HMAC, or payload encryption on internal endpoints
+- "Consider adding signed requests" type recommendations on features that don't transmit cross-trust-boundary payloads
 
 ### 5. API Security (OWASP API Top 10) _(when API endpoints are touched)_
 
@@ -203,6 +209,7 @@ Skip pillars with no findings rather than printing "No issues" for each.
 ## Rules
 
 - Severity reflects exploitability and blast radius, not theoretical concern. A hardcoded production secret is HIGH; a missing `Strict-Transport-Security` header is LOW.
+- **Stay proportional.** Default posture is session auth + TLS at trust boundaries. Do not propose HMAC, request signing, payload encryption, or zero-trust controls unless the diff actually adds something that warrants them. "We could also sign these requests" is not a finding.
 - Cite frameworks (OWASP Top 10, OWASP API Top 10, OWASP ASVS, NIST 800-53, CWE) only when it sharpens the fix. Don't pad with references.
 - Don't duplicate findings already owned by sibling reviewers — soft deletes / actor attribution belong to `audit-compliance`, retry/timeout/durability belong to `production-hardening`. PII in analytics events overlaps with `analytics-coverage`; report from the regulatory angle (LGPD/GDPR) rather than re-flagging the same line.
 - Be concrete. Every finding must have a file:line and a fix.

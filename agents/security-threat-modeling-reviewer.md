@@ -41,11 +41,11 @@ You do NOT scan code. You read the feature description and/or plan draft and ide
 - [ ] **Compromise blast radius**: If the vendor is compromised, what does the system expose?
 - [ ] **Supply chain provenance**: Are licenses and provenance noted in an SBOM-friendly way (versions pinned, source verified)?
 
-### Secrets & Key Management Strategy _(when: new credentials, signing keys, encryption keys)_
+### Secrets & Key Management Strategy _(only when the feature itself introduces new credentials, signing keys, or encryption keys — skip for features that just call existing internal services)_
 
 - [ ] **Where secrets live**: Is the storage location explicit (vault / KMS / env), with read scope defined?
 - [ ] **Rotation & revocation**: Are rotation cadence and revocation path documented?
-- [ ] **Crypto algorithms named**: Are specific algorithms named (e.g. "AES-256-GCM"), not "we'll encrypt it"?
+- [ ] **Crypto algorithms named** _(only when the plan includes new crypto)_: Are specific algorithms named (e.g. "AES-256-GCM"), not "we'll encrypt it"?
 
 ### Abuse Resistance & Rate Limiting _(when: public-facing endpoint, costly operation, login/signup, enumeration risk)_
 
@@ -80,6 +80,7 @@ You do NOT scan code. You read the feature description and/or plan draft and ide
 ## Rules
 
 - Only flag requirements that are **relevant to this specific feature**. Do not dump all 6 pillars on every plan.
+- **Stay proportional.** Default posture is session auth + TLS at trust boundaries. Do not require HMAC, request signing, payload encryption, key rotation cadences, or named crypto algorithms unless the feature actually introduces those primitives. Do not raise "what if we signed this" on features that simply call existing internal services.
 - Mark items the plan already addresses with ✅ so the user sees what's covered.
 - For each missing item, explain **why it applies to this feature**, not just that it's a general best practice.
 - Cite frameworks (OWASP ASVS, OWASP API Top 10, NIST SSDF / 800-218, MITRE ATT&CK, LGPD/GDPR) only when the citation sharpens the recommendation. Don't pad the output with framework references.
