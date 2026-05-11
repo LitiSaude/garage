@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commerce Domain — Overview</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--primary:#735ABF;--primary-dark:#453281;--primary-light:#B1A3DB;--primary-tint:#ECE7F7;--success:#59A679;--success-light:#DEEDE4;--error:#DA4167;--error-light:#F7D4DD;--warning:#E4CF67;--warning-light:#FBF8E9;--bg:#F5F6FA;--surface:#FFFFFF;--surface-alt:#FAFAFC;--text-dark:#100618;--text-strong:#867D90;--text-light:#BDB7C5;--text-on-brand:#FFFFFF;--stroke:#E6E3E8;--stroke-soft:#BDB7C5;--s-2:2px;--s-4:4px;--s-6:6px;--s-8:8px;--s-10:10px;--s-12:12px;--s-16:16px;--s-20:20px;--s-24:24px;--s-32:32px;--s-40:40px;--s-48:48px;--s-64:64px;--r-4:4px;--r-8:8px;--r-12:12px;--r-16:16px;--r-24:24px;--r-32:32px;--r-full:999px;--ff-sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--ff-mono:'JetBrains Mono','SF Mono',Consolas,monospace;--side-menu-w:280px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{font-family:var(--ff-sans);background:var(--bg);color:var(--text-dark);line-height:1.5;font-size:16px;font-weight:400;letter-spacing:-0.005em}
+  .shell{display:flex;min-height:100vh}
+  .side-menu{width:var(--side-menu-w);flex-shrink:0;background:var(--surface);border-right:1px solid var(--stroke);position:sticky;top:0;align-self:flex-start;height:100vh;overflow-y:auto;padding:var(--s-24) var(--s-20)}
+  .page-main{flex:1;min-width:0;padding:var(--s-48) var(--s-32);max-width:960px}
+  .side-menu-top{padding-bottom:var(--s-16);border-bottom:1px solid var(--stroke);margin-bottom:var(--s-16)}
+  .breadcrumb{display:inline-block;font-family:var(--ff-mono);font-size:12px;color:var(--text-dark);text-decoration:none;border:none;margin-bottom:var(--s-12);font-weight:600}
+  .spec-meta{display:flex;flex-direction:column;gap:var(--s-2)}
+  .spec-meta .eyebrow{font-family:var(--ff-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-dark)}
+  .spec-meta .last-updated{font-family:var(--ff-mono);font-size:11px;color:var(--text-strong)}
+  .side-menu nav{margin-bottom:var(--s-20)}
+  .side-menu nav h4{font-family:var(--ff-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-strong);margin-bottom:var(--s-8);padding:0 var(--s-8)}
+  .side-menu nav ul{list-style:none;padding:0}
+  .side-menu nav li{margin-bottom:var(--s-2)}
+  .side-menu nav a{display:block;padding:var(--s-6) var(--s-8);font-size:14px;color:var(--text-strong);text-decoration:none;border-radius:var(--r-8);transition:background .15s,color .15s;border-left:2px solid transparent}
+  .side-menu nav a:hover{background:var(--bg);color:var(--text-dark)}
+  .side-menu nav a.current{background:var(--primary-tint);color:var(--primary-dark);font-weight:600;border-left-color:var(--primary)}
+  .side-menu-anchors a{font-family:var(--ff-mono);font-size:12px;padding-left:var(--s-12)}
+  h1{font-size:40px;font-weight:600;letter-spacing:-0.025em;line-height:1.1;margin-bottom:var(--s-12)}
+  h2{font-size:28px;font-weight:600;letter-spacing:-0.02em;line-height:1.2;margin-bottom:var(--s-12)}
+  h3{font-size:18px;font-weight:600;letter-spacing:-0.01em;margin-bottom:var(--s-8)}
+  h4{font-size:13px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;color:var(--text-strong)}
+  p{font-size:16px;color:var(--text-dark);margin-bottom:var(--s-12)}
+  p.lede{font-size:18px;color:var(--text-strong);max-width:780px;margin-bottom:var(--s-16)}
+  code{font-family:var(--ff-mono);font-size:0.9em;background:var(--bg);padding:1px 5px;border-radius:var(--r-4)}
+  a{color:var(--primary);text-decoration:none;border-bottom:1px solid var(--primary-light);transition:opacity .15s}
+  a:hover{opacity:0.7}
+  section{padding:var(--s-32) 0;border-top:1px solid var(--stroke);scroll-margin-top:var(--s-24)}
+  section:first-of-type{border-top:none;padding-top:0}
+  .section-eyebrow{font-family:var(--ff-mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary);margin-bottom:var(--s-12)}
+  .card{background:var(--surface);border:1px solid var(--stroke);border-radius:var(--r-16);padding:var(--s-24)}
+  .card-accent{border-top:3px solid var(--primary)}
+  .card-success{border-top:3px solid var(--success)}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-20)}
+  .grid-3{display:grid;grid-template-columns:repeat(3, 1fr);gap:var(--s-16)}
+  .grid-4{display:grid;grid-template-columns:repeat(4, 1fr);gap:var(--s-12)}
+  .kpi{background:var(--surface);border:1px solid var(--stroke);border-radius:var(--r-12);padding:var(--s-20)}
+  .kpi-num{font-family:var(--ff-mono);font-size:36px;font-weight:600;color:var(--primary);line-height:1;letter-spacing:-0.02em;margin-bottom:var(--s-8)}
+  .kpi-label{font-size:13px;color:var(--text-strong);line-height:1.35}
+  .callout{background:var(--primary-tint);border-left:3px solid var(--primary);padding:var(--s-16) var(--s-20);border-radius:0 var(--r-8) var(--r-8) 0;margin:var(--s-20) 0}
+  .callout.success{background:var(--success-light);border-color:var(--success)}
+  .callout-label{font-family:var(--ff-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary);margin-bottom:var(--s-4)}
+  .callout.success .callout-label{color:var(--success)}
+  ul.clean{list-style:none;padding:0}
+  ul.clean li{position:relative;padding-left:var(--s-20);margin-bottom:var(--s-8);font-size:15px;color:var(--text-dark)}
+  ul.clean li::before{content:"";position:absolute;left:0;top:9px;width:8px;height:2px;background:var(--primary);border-radius:1px}
+  ul.clean li code{background:var(--bg);padding:1px 5px;border-radius:var(--r-4);font-size:13px}
+  .svg-frame{background:var(--surface);border:1px solid var(--stroke);border-radius:var(--r-16);padding:var(--s-24);overflow:hidden}
+  .svg-frame svg{width:100%;height:auto;display:block}
+  .svg-caption{font-family:var(--ff-mono);font-size:11px;color:var(--text-strong);margin-top:var(--s-12);text-align:center}
+  .hero{background:linear-gradient(135deg,#FFFFFF 0%,var(--primary-tint) 100%);margin:calc(-1 * var(--s-48)) calc(-1 * var(--s-32)) var(--s-32);padding:var(--s-64) var(--s-32) var(--s-48);border-bottom:1px solid var(--stroke)}
+  .hero-grid{display:grid;grid-template-columns:1fr auto;gap:var(--s-32);align-items:end}
+  .hero-meta{font-family:var(--ff-mono);font-size:12px;color:var(--text-strong);text-align:right}
+  .hero-meta b{display:block;color:var(--text-dark);font-size:13px;font-weight:600;margin-bottom:var(--s-2)}
+  .hero h1{margin-bottom:var(--s-12)}
+  .hero .subtitle{font-size:20px;color:var(--text-strong);max-width:720px;line-height:1.4;margin-bottom:var(--s-24)}
+  .hero-badges{display:flex;flex-wrap:wrap;gap:var(--s-8);margin-top:var(--s-24)}
+  .badge{display:inline-flex;align-items:center;gap:var(--s-6);background:var(--surface);border:1px solid var(--stroke);padding:var(--s-6) var(--s-12);border-radius:var(--r-full);font-family:var(--ff-mono);font-size:12px;color:var(--text-dark)}
+  .badge-dot{width:6px;height:6px;border-radius:50%;background:var(--primary)}
+  .badge-dot.olive{background:var(--success)}
+  .badge-dot.warning{background:var(--warning)}
+  .chapter-card{background:var(--surface);border:1px solid var(--stroke);border-radius:var(--r-16);padding:var(--s-24);text-decoration:none;color:var(--text-dark);border-bottom:1px solid var(--stroke);display:flex;flex-direction:column;min-height:160px;transition:transform .15s,border-color .15s,box-shadow .15s}
+  .chapter-card:hover{transform:translateY(-2px);border-color:var(--primary);box-shadow:0 4px 12px rgba(115,90,191,0.08);opacity:1}
+  .chapter-card .chapter-num{font-family:var(--ff-mono);font-size:10px;font-weight:600;color:var(--primary);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:var(--s-6)}
+  .chapter-card .chapter-title{font-size:18px;font-weight:600;color:var(--text-dark);margin-bottom:var(--s-8)}
+  .chapter-card .chapter-desc{font-size:13px;color:var(--text-strong);line-height:1.45;flex:1}
+  .chapter-card .chapter-arrow{font-family:var(--ff-mono);font-size:11px;color:var(--primary);margin-top:var(--s-12);align-self:flex-end}
+  footer.page-footer{background:var(--text-dark);color:var(--text-light);padding:var(--s-40) var(--s-32);margin:var(--s-48) calc(-1 * var(--s-32)) calc(-1 * var(--s-48));font-size:14px}
+  footer.page-footer .footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-32)}
+  footer.page-footer h4{color:var(--text-on-brand);margin-bottom:var(--s-12)}
+  footer.page-footer a{color:var(--primary-light);border-color:var(--primary-light)}
+  footer.page-footer ul{list-style:none;padding:0}
+  footer.page-footer li{margin-bottom:var(--s-8);font-family:var(--ff-mono);font-size:13px}
+  @media (max-width:900px){.shell{flex-direction:column}.side-menu{position:static;width:100%;height:auto;border-right:none;border-bottom:1px solid var(--stroke)}.page-main{padding:var(--s-24) var(--s-20);max-width:100%}.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.hero-grid{grid-template-columns:1fr}.hero-meta{text-align:left}.hero{margin:calc(-1 * var(--s-24)) calc(-1 * var(--s-20)) var(--s-24);padding:var(--s-32) var(--s-20)}h1{font-size:32px}h2{font-size:22px}footer.page-footer .footer-grid{grid-template-columns:1fr}footer.page-footer{margin:var(--s-32) calc(-1 * var(--s-20)) calc(-1 * var(--s-24));padding:var(--s-32) var(--s-20)}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <aside class="side-menu">
+    <div class="side-menu-top">
+      <span class="breadcrumb">Commerce Domain</span>
+      <div class="spec-meta">
+        <span class="eyebrow">ENG-8165 · v0.2</span>
+        <span class="last-updated">Updated 2026-05-09</span>
+      </div>
+    </div>
+    <nav class="side-menu-pages">
+      <h4>Pages</h4>
+      <ul>
+        <li><a href="index.html" class="current">Overview</a></li>
+        <li><a href="architecture.html">Architecture</a></li>
+        <li><a href="flows.html">Flows</a></li>
+        <li><a href="data-model.html">Data model</a></li>
+        <li><a href="api.html">API reference</a></li>
+        <li><a href="deployment.html">Deployment</a></li>
+        <li><a href="roadmap.html">Roadmap</a></li>
+      </ul>
+    </nav>
+    <nav class="side-menu-anchors">
+      <h4>On this page</h4>
+      <ul>
+        <li><a href="#tldr">TL;DR</a></li>
+        <li><a href="#sources">Source documents</a></li>
+        <li><a href="#journey">Customer journey</a></li>
+        <li><a href="#contents">What's inside</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="page-main">
+
+    <!-- ─── Hero ─── -->
+    <header class="hero">
+      <div class="hero-grid">
+        <div>
+          <div style="font-family:var(--ff-mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary);margin-bottom:var(--s-12)">ENG-8165 · Visual companion · v0.2</div>
+          <h1>Commerce Domain</h1>
+          <p class="subtitle">Phase 1 — GLP-1 prescription quick-buy via Xis Farmácia. Two taps from Home; ships as a Fly.io app behind the existing AWS API Gateway; channel-agnostic schema for the future, GLP-1-only surface today.</p>
+          <div class="hero-badges">
+            <span class="badge"><span class="badge-dot"></span>Spec — what / why</span>
+            <span class="badge"><span class="badge-dot olive"></span>Implementation plan — how / in what order</span>
+            <span class="badge"><span class="badge-dot warning"></span>Live artifact — updates as plans evolve</span>
+          </div>
+        </div>
+        <div class="hero-meta">
+          <b>Last updated</b>2026-05-09<br>
+          <b style="margin-top:var(--s-12)">Source branches</b>
+          eng-8165-novo-dominio-commerce<br>
+          eng-8165-commerce-implementation-plan
+        </div>
+      </div>
+    </header>
+
+    <!-- ─── TL;DR ─── -->
+    <section id="tldr">
+      <div class="section-eyebrow">01 · TL;DR</div>
+      <h2>Tap Comprar on the GLP-1 card. Tap Confirmar. Done.</h2>
+      <p class="lede">Today: GLP-1 prescription quick-buy. Tomorrow: lab tests, devices, supplements, generic catalog browse. The data model and internal seams are <em>channel-agnostic from day one</em> so future surface is additive — one row class in <code>products</code>, one seed script, one entry in the channel dispatch table. The v1 customer-facing surface is intentionally narrow: BFF + preview + create + list + detail + 2 webhooks.</p>
+
+      <div class="grid-4" style="margin-top:var(--s-32)">
+        <div class="kpi"><div class="kpi-num">7</div><div class="kpi-label">customer-facing endpoints v1 · BFF + 4 orders + 2 webhooks</div></div>
+        <div class="kpi"><div class="kpi-num">11</div><div class="kpi-label">Xis fulfillment statuses normalized into <code>OrderFulfillmentStatus</code></div></div>
+        <div class="kpi"><div class="kpi-num">3</div><div class="kpi-label">Idempotency layers · DB guard · workflow REJECT_DUPLICATE · provider keys</div></div>
+        <div class="kpi"><div class="kpi-num">14</div><div class="kpi-label">PRs across two tracks · feature (PR&nbsp;0–9 incl. 5.5) + deploy (PR&nbsp;D1–D3)</div></div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-label">Opaque routing principle</div>
+        <code>pharmacy_provider</code> never appears in any client-visible response from BFF, preview, or order-create. It's a backend-internal decision. Order detail MAY surface a customer-friendly <code>pharmacy_name</code> display string post-placement — never the enum. JSON-grep regression tests assert no leaks.
+      </div>
+      <div class="callout">
+        <div class="callout-label">Gateway-fronted</div>
+        <code>liti-commerce</code> is internal-only on Fly's network. Mobile reaches it via <code>api.litisaude.com.br/commerce/{proxy+}</code> through the existing AWS API Gateway with <code>X-Origin-Token</code> enforcement. The BFF for the quick-buy card lives on <code>pygeia</code> main; webhook providers point at the gateway, not at Fly.
+      </div>
+    </section>
+
+    <!-- ─── Source documents ─── -->
+    <section id="sources">
+      <div class="section-eyebrow">02 · Source documents</div>
+      <h2>Two markdown plans, two audiences.</h2>
+      <p class="lede">These are <em>complementary</em>, not competing. Reading both takes ~30 minutes; this companion lets you navigate them in 5.</p>
+
+      <div class="grid-2" style="margin-top:var(--s-32)">
+        <article class="card card-accent">
+          <h4 style="color:var(--primary)">Spec — <code>2026-05-07-commerce-domain.md</code></h4>
+          <h3 style="margin-top:var(--s-8)">What / why · 442 lines</h3>
+          <p><strong>Audience:</strong> reviewers, future engineers, product partners. Long shelf life — documents <em>our</em> design.</p>
+          <p><strong>Branch:</strong> <code>eng-8165-novo-dominio-commerce</code></p>
+          <ul class="clean" style="margin-top:var(--s-16)">
+            <li>Context, goals, non-goals (deferred to phase 2+)</li>
+            <li>Design decisions and the why behind each</li>
+            <li>Architecture, subdomain layout, data model</li>
+            <li>Customer journey, webhooks, deployment topology</li>
+            <li>Observability, security, success criteria</li>
+          </ul>
+        </article>
+
+        <article class="card card-success">
+          <h4 style="color:var(--success)">Implementation plan — <code>2026-05-07-commerce-domain-implementation-plan.md</code></h4>
+          <h3 style="margin-top:var(--s-8)">How / in what order · 721 lines</h3>
+          <p><strong>Audience:</strong> the executor (engineer or agent). Tracks the PR sequence; rotates faster than the spec.</p>
+          <p><strong>Branch:</strong> <code>eng-8165-commerce-implementation-plan</code></p>
+          <ul class="clean" style="margin-top:var(--s-16)">
+            <li>Decisions that diverge from the draft (with reasons)</li>
+            <li>Concrete edits per PR · 0, 1a, 1b, 2, 3, 4, 5, 5.5 (BFF), 6, 7, 8, 9</li>
+            <li>Deploy track · D1 (entry points), D2 (Fly.io), D3 (gateway routes + cutover)</li>
+            <li>Dependency graph + execution mechanism per PR</li>
+            <li>Observability + idempotency coverage requirements</li>
+            <li>Verification commands and per-PR gates</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- ─── Customer journey ─── -->
+    <section id="journey">
+      <div class="section-eyebrow">03 · Customer journey</div>
+      <h2>Five stops from Home tap to DELIVERED.</h2>
+      <p class="lede">Stop 1 is the BFF compose (Home / detail card). Stops 2–3 are the synchronous tap-Comprar / tap-Confirmar flow. Stop 4 is the background saga. Stop 5 is async webhook fan-in.</p>
+
+      <div class="svg-frame" style="margin-top:var(--s-32)">
+        <svg viewBox="0 0 1100 380" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono, monospace">
+          <defs>
+            <marker id="arrow-j" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="#735ABF"/>
+            </marker>
+          </defs>
+          <g><circle cx="120" cy="90" r="42" fill="#FFFFFF" stroke="#735ABF" stroke-width="2"/><text x="120" y="80" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">01</text><text x="120" y="98" font-size="13" font-weight="600" fill="#735ABF" text-anchor="middle">Compose</text><text x="120" y="160" font-size="11" fill="#867D90" text-anchor="middle">BFF in pygeia main</text><text x="120" y="176" font-size="11" fill="#867D90" text-anchor="middle">cached price · missing[]</text><text x="120" y="200" font-size="10" font-weight="500" fill="#100618" text-anchor="middle">GET /commerce/v1/home/...</text></g>
+          <line x1="165" y1="90" x2="225" y2="90" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arrow-j)"/>
+          <g><circle cx="270" cy="90" r="42" fill="#FFFFFF" stroke="#735ABF" stroke-width="2"/><text x="270" y="80" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">02</text><text x="270" y="98" font-size="13" font-weight="600" fill="#735ABF" text-anchor="middle">Preview</text><text x="270" y="160" font-size="11" fill="#867D90" text-anchor="middle">live re-quote · Xis</text><text x="270" y="176" font-size="11" fill="#867D90" text-anchor="middle">prescription check</text><text x="270" y="200" font-size="10" font-weight="500" fill="#100618" text-anchor="middle">POST /commerce/v1/orders/preview</text></g>
+          <line x1="315" y1="90" x2="375" y2="90" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arrow-j)"/>
+          <g><circle cx="420" cy="90" r="42" fill="#735ABF" stroke="#735ABF" stroke-width="2"/><text x="420" y="80" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">03</text><text x="420" y="98" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">Confirm</text><text x="420" y="160" font-size="11" fill="#735ABF" font-weight="600" text-anchor="middle">202 + order_id</text><text x="420" y="176" font-size="11" fill="#867D90" text-anchor="middle">workflow kicks off</text><text x="420" y="200" font-size="10" font-weight="500" fill="#100618" text-anchor="middle">POST /commerce/v1/orders</text></g>
+          <line x1="465" y1="90" x2="525" y2="90" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arrow-j)" stroke-dasharray="4,3"/>
+          <g><circle cx="570" cy="90" r="42" fill="#FFFFFF" stroke="#59A679" stroke-width="2"/><text x="570" y="80" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">04</text><text x="570" y="98" font-size="13" font-weight="600" fill="#59A679" text-anchor="middle">Saga</text><text x="570" y="160" font-size="11" fill="#867D90" text-anchor="middle">charge → place →</text><text x="570" y="176" font-size="11" fill="#867D90" text-anchor="middle">confirm → publish</text><text x="570" y="200" font-size="10" font-weight="500" fill="#100618" text-anchor="middle">Temporal · commerce-default</text></g>
+          <line x1="615" y1="90" x2="675" y2="90" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arrow-j)" stroke-dasharray="4,3"/>
+          <g><circle cx="720" cy="90" r="42" fill="#FFFFFF" stroke="#735ABF" stroke-width="2"/><text x="720" y="80" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">05</text><text x="720" y="98" font-size="13" font-weight="600" fill="#735ABF" text-anchor="middle">Updates</text><text x="720" y="160" font-size="11" fill="#867D90" text-anchor="middle">PROCESSING →</text><text x="720" y="176" font-size="11" fill="#867D90" text-anchor="middle">DELIVERED</text><text x="720" y="200" font-size="10" font-weight="500" fill="#100618" text-anchor="middle">webhook + GET poll</text></g>
+          <g transform="translate(160, 260)">
+            <rect x="0" y="0" width="780" height="80" rx="12" ry="12" fill="#FBF8E9" stroke="#E4CF67" stroke-width="1"/>
+            <text x="20" y="22" font-size="10" font-weight="600" fill="#A88E1A" font-family="JetBrains Mono, monospace">ASYNC BOUNDARY · STOP 03 → 04</text>
+            <text x="20" y="42" font-size="12" fill="#100618" font-family="Outfit, sans-serif">The router returns 202 with the order_id immediately. The mobile client polls <tspan font-family="JetBrains Mono, monospace" fill="#735ABF">GET /commerce/v1/orders/{id}</tspan> to render status</text>
+            <text x="20" y="60" font-size="12" fill="#100618" font-family="Outfit, sans-serif">while Temporal runs the placement saga in the background. Vindi <tspan font-family="JetBrains Mono, monospace" fill="#735ABF">bill.paid</tspan> webhook resumes any <tspan font-family="JetBrains Mono, monospace" fill="#735ABF">pending</tspan> charges; Xis Type-1 webhooks drive fulfillment status forward.</text>
+          </g>
+          <text x="550" y="370" font-size="10" font-family="JetBrains Mono, monospace" fill="#BDB7C5" text-anchor="middle">solid arrow = synchronous · dashed = async</text>
+        </svg>
+        <div class="svg-caption">Customer journey · API endpoints below each stop</div>
+      </div>
+    </section>
+
+    <!-- ─── What's inside ─── -->
+    <section id="contents">
+      <div class="section-eyebrow">04 · What's inside this companion</div>
+      <h2>Six chapters · open the one that matters for your review.</h2>
+      <p class="lede">Each page focuses on one concern. The side menu stays with you.</p>
+
+      <div class="grid-3" style="margin-top:var(--s-32); gap:var(--s-16)">
+        <a href="architecture.html" class="chapter-card">
+          <div class="chapter-num">Chapter 01</div>
+          <div class="chapter-title">Architecture</div>
+          <div class="chapter-desc">High-level system flowchart, three-subdomain layout (catalog · orders · pharmacy), and how new channels / pharmacies plug in without API churn.</div>
+          <div class="chapter-arrow">architecture.html →</div>
+        </a>
+        <a href="flows.html" class="chapter-card">
+          <div class="chapter-num">Chapter 02</div>
+          <div class="chapter-title">Flows</div>
+          <div class="chapter-desc">Forward-only saga (charge first, place second), three-layer idempotency, and the Type-1 webhook lifecycle as a sequence diagram.</div>
+          <div class="chapter-arrow">flows.html →</div>
+        </a>
+        <a href="data-model.html" class="chapter-card">
+          <div class="chapter-num">Chapter 03</div>
+          <div class="chapter-title">Data model</div>
+          <div class="chapter-desc">Five new tables (two append-only at DB level), color-coded ERD by subdomain, and the 11-status Xis → Liti normalization machine.</div>
+          <div class="chapter-arrow">data-model.html →</div>
+        </a>
+        <a href="api.html" class="chapter-card">
+          <div class="chapter-num">Chapter 04</div>
+          <div class="chapter-title">API reference</div>
+          <div class="chapter-desc">Nine endpoints across catalog · orders · webhooks. Sample request / response payloads, status-code tables, signature-verification notes for webhooks.</div>
+          <div class="chapter-arrow">api.html →</div>
+        </a>
+        <a href="deployment.html" class="chapter-card">
+          <div class="chapter-num">Chapter 05</div>
+          <div class="chapter-title">Deployment</div>
+          <div class="chapter-desc"><code>liti-commerce</code> as a standalone Fly.io app from the same monorepo. Cross-domain RO reads, separate webhook URL, shared Temporal cluster.</div>
+          <div class="chapter-arrow">deployment.html →</div>
+        </a>
+        <a href="roadmap.html" class="chapter-card">
+          <div class="chapter-num">Chapter 06</div>
+          <div class="chapter-title">Roadmap</div>
+          <div class="chapter-desc">15 PRs across feature + deploy tracks · execution mechanism per PR · 10 out-of-band prerequisites with owners and what they block.</div>
+          <div class="chapter-arrow">roadmap.html →</div>
+        </a>
+      </div>
+    </section>
+
+    <footer class="page-footer">
+      <div class="footer-grid">
+        <div>
+          <h4>Source documents</h4>
+          <ul>
+            <li><a href="../2026-05-07-commerce-domain.md">2026-05-07-commerce-domain.md</a> · spec · branch <code>eng-8165-novo-dominio-commerce</code></li>
+            <li><a href="../2026-05-07-commerce-domain-implementation-plan.md">2026-05-07-commerce-domain-implementation-plan.md</a> · plan · branch <code>eng-8165-commerce-implementation-plan</code></li>
+            <li><a href="https://linear.app/liti/issue/ENG-8165/novo-dominio-commerce">Linear · ENG-8165</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>About this document</h4>
+          <p style="color:var(--text-light); font-size:14px; line-height:1.6">A multi-page mini-site companion to the source markdown plans. Auto-regeneratable via <code style="background:transparent; color:var(--primary-light)">/visualize-plan</code>.</p>
+          <p style="color:var(--text-light); font-size:13px; margin-top:var(--s-12); font-family:var(--ff-mono)">Visual identity · Liti mobile design system<br>Outfit · #735ABF · #59A679<br>ENG-8165 · v0.2 · 2026-05-09</p>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>

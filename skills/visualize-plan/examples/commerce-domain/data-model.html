@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commerce Domain — Data model</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--primary:#735ABF;--primary-dark:#453281;--primary-light:#B1A3DB;--primary-tint:#ECE7F7;--success:#59A679;--success-light:#DEEDE4;--error:#DA4167;--error-light:#F7D4DD;--warning:#E4CF67;--warning-light:#FBF8E9;--bg:#F5F6FA;--surface:#FFFFFF;--surface-alt:#FAFAFC;--text-dark:#100618;--text-strong:#867D90;--text-light:#BDB7C5;--text-on-brand:#FFFFFF;--stroke:#E6E3E8;--stroke-soft:#BDB7C5;--s-2:2px;--s-4:4px;--s-6:6px;--s-8:8px;--s-10:10px;--s-12:12px;--s-16:16px;--s-20:20px;--s-24:24px;--s-32:32px;--s-40:40px;--s-48:48px;--s-64:64px;--r-4:4px;--r-8:8px;--r-12:12px;--r-16:16px;--r-24:24px;--r-32:32px;--r-full:999px;--ff-sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--ff-mono:'JetBrains Mono','SF Mono',Consolas,monospace;--side-menu-w:280px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--ff-sans);background:var(--bg);color:var(--text-dark);line-height:1.5;font-size:16px;letter-spacing:-0.005em}
+  .shell{display:flex;min-height:100vh}
+  .side-menu{width:var(--side-menu-w);flex-shrink:0;background:var(--surface);border-right:1px solid var(--stroke);position:sticky;top:0;align-self:flex-start;height:100vh;overflow-y:auto;padding:var(--s-24) var(--s-20)}
+  .page-main{flex:1;min-width:0;padding:var(--s-48) var(--s-32);max-width:960px}
+  .side-menu-top{padding-bottom:var(--s-16);border-bottom:1px solid var(--stroke);margin-bottom:var(--s-16)}
+  .breadcrumb{display:inline-block;font-family:var(--ff-mono);font-size:12px;color:var(--primary);text-decoration:none;border:none;margin-bottom:var(--s-12);font-weight:500}
+  .breadcrumb:hover{color:var(--primary-dark)}
+  .spec-meta{display:flex;flex-direction:column;gap:var(--s-2)}
+  .spec-meta .eyebrow{font-family:var(--ff-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-dark)}
+  .spec-meta .last-updated{font-family:var(--ff-mono);font-size:11px;color:var(--text-strong)}
+  .side-menu nav{margin-bottom:var(--s-20)}
+  .side-menu nav h4{font-family:var(--ff-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-strong);margin-bottom:var(--s-8);padding:0 var(--s-8)}
+  .side-menu nav ul{list-style:none;padding:0}
+  .side-menu nav li{margin-bottom:var(--s-2)}
+  .side-menu nav a{display:block;padding:var(--s-6) var(--s-8);font-size:14px;color:var(--text-strong);text-decoration:none;border-radius:var(--r-8);transition:background .15s,color .15s;border-left:2px solid transparent}
+  .side-menu nav a:hover{background:var(--bg);color:var(--text-dark)}
+  .side-menu nav a.current{background:var(--primary-tint);color:var(--primary-dark);font-weight:600;border-left-color:var(--primary)}
+  .side-menu-anchors a{font-family:var(--ff-mono);font-size:12px;padding:var(--s-6) var(--s-8) var(--s-6) var(--s-12)}
+  .page-header{margin-bottom:var(--s-40)}
+  .page-eyebrow{font-family:var(--ff-mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary);margin-bottom:var(--s-12)}
+  h1{font-size:40px;font-weight:600;letter-spacing:-0.025em;line-height:1.1;margin-bottom:var(--s-12)}
+  h2{font-size:28px;font-weight:600;letter-spacing:-0.02em;line-height:1.2;margin-bottom:var(--s-12)}
+  h3{font-size:18px;font-weight:600;letter-spacing:-0.01em;margin-bottom:var(--s-8)}
+  h4{font-size:13px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;color:var(--text-strong)}
+  p{font-size:16px;color:var(--text-dark);margin-bottom:var(--s-12)}
+  p.lede{font-size:18px;color:var(--text-strong);max-width:780px;margin-bottom:var(--s-16)}
+  code{font-family:var(--ff-mono);font-size:0.9em;background:var(--bg);padding:1px 5px;border-radius:var(--r-4)}
+  a{color:var(--primary);text-decoration:none;border-bottom:1px solid var(--primary-light);transition:opacity .15s}
+  a:hover{opacity:0.7}
+  section{padding:var(--s-32) 0;border-top:1px solid var(--stroke);scroll-margin-top:var(--s-24)}
+  section:first-of-type{border-top:none;padding-top:0}
+  .section-eyebrow{font-family:var(--ff-mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary);margin-bottom:var(--s-12)}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-20)}
+  .callout{background:var(--primary-tint);border-left:3px solid var(--primary);padding:var(--s-16) var(--s-20);border-radius:0 var(--r-8) var(--r-8) 0;margin:var(--s-20) 0}
+  .callout.warning{background:var(--warning-light);border-color:var(--warning)}
+  .callout-label{font-family:var(--ff-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary);margin-bottom:var(--s-4)}
+  .callout.warning .callout-label{color:#A88E1A}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{text-align:left;font-weight:600;padding:var(--s-10) var(--s-12);border-bottom:1.5px solid var(--text-dark);color:var(--text-dark);font-size:13px;text-transform:uppercase;letter-spacing:0.04em}
+  td{padding:var(--s-10) var(--s-12);border-bottom:1px solid var(--stroke);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td.mono{font-family:var(--ff-mono);font-size:13px;color:var(--primary-dark)}
+  .pill{display:inline-block;padding:2px 8px;border-radius:var(--r-full);font-family:var(--ff-mono);font-size:11px;font-weight:500}
+  .pill-primary{background:var(--primary-tint);color:var(--primary-dark)}
+  .pill-success{background:var(--success-light);color:#2D6A48}
+  .pill-error{background:var(--error-light);color:#8E1B36}
+  .pill-warning{background:var(--warning-light);color:#A88E1A}
+  .pill-muted{background:var(--bg);color:var(--text-strong)}
+  .svg-frame{background:var(--surface);border:1px solid var(--stroke);border-radius:var(--r-16);padding:var(--s-24);overflow:hidden}
+  .svg-frame svg{width:100%;height:auto;display:block}
+  .svg-caption{font-family:var(--ff-mono);font-size:11px;color:var(--text-strong);margin-top:var(--s-12);text-align:center}
+  footer.page-footer{background:var(--text-dark);color:var(--text-light);padding:var(--s-40) var(--s-32);margin:var(--s-48) calc(-1 * var(--s-32)) calc(-1 * var(--s-48));font-size:14px}
+  footer.page-footer .footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-32)}
+  footer.page-footer h4{color:var(--text-on-brand);margin-bottom:var(--s-12)}
+  footer.page-footer a{color:var(--primary-light);border-color:var(--primary-light)}
+  footer.page-footer ul{list-style:none;padding:0}
+  footer.page-footer li{margin-bottom:var(--s-8);font-family:var(--ff-mono);font-size:13px}
+  @media (max-width:900px){.shell{flex-direction:column}.side-menu{position:static;width:100%;height:auto;border-right:none;border-bottom:1px solid var(--stroke)}.page-main{padding:var(--s-24) var(--s-20);max-width:100%}.grid-2{grid-template-columns:1fr}h1{font-size:32px}h2{font-size:22px}footer.page-footer .footer-grid{grid-template-columns:1fr}footer.page-footer{margin:var(--s-32) calc(-1 * var(--s-20)) calc(-1 * var(--s-24));padding:var(--s-32) var(--s-20)}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <aside class="side-menu">
+    <div class="side-menu-top">
+      <a class="breadcrumb" href="index.html">← Commerce Domain</a>
+      <div class="spec-meta">
+        <span class="eyebrow">ENG-8165 · v0.2</span>
+        <span class="last-updated">Updated 2026-05-09</span>
+      </div>
+    </div>
+    <nav class="side-menu-pages">
+      <h4>Pages</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="architecture.html">Architecture</a></li>
+        <li><a href="flows.html">Flows</a></li>
+        <li><a href="data-model.html" class="current">Data model</a></li>
+        <li><a href="api.html">API reference</a></li>
+        <li><a href="deployment.html">Deployment</a></li>
+        <li><a href="roadmap.html">Roadmap</a></li>
+      </ul>
+    </nav>
+    <nav class="side-menu-anchors">
+      <h4>On this page</h4>
+      <ul>
+        <li><a href="#erd">Entity-relationship</a></li>
+        <li><a href="#state-machine">State machine</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="page-main">
+
+    <header class="page-header">
+      <div class="page-eyebrow">Chapter 03 · Data model</div>
+      <h1>Data model</h1>
+      <p class="lede">Six new tables · two append-only at the DB level. <code>order_status_events</code> and <code>pharmacy_webhook_events</code> have UPDATE/DELETE revoked via Alembic migration on the application role. Six months later, any transition is traceable to the webhook (or workflow / cron) that caused it. The auxiliary <code>medication_sku_mapping</code> table joins continuous_care medications to commerce SKUs and powers the BFF lookup.</p>
+    </header>
+
+    <!-- ─── ERD ─── -->
+    <section id="erd">
+      <div class="section-eyebrow">Entity-relationship</div>
+      <h2>Five tables, color-coded by subdomain.</h2>
+      <p class="lede">Cross-domain references (customer_id, patient_id, partner_id, prescription_id, prescribing_staff_id) are stored as plain UUIDs — never as FKs. Snapshot fields denormalize the related entity at order-create time so cross-domain deletes don't cascade.</p>
+
+      <div class="svg-frame">
+        <svg viewBox="0 0 1100 620" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono, monospace">
+          <defs><marker id="arr-fk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#867D90"/></marker></defs>
+          <g><rect x="370" y="40" width="360" height="200" rx="12" fill="#DEEDE4" stroke="#59A679" stroke-width="2"/>
+            <text x="386" y="65" font-size="13" font-weight="700" fill="#2D6A48">orders</text>
+            <text x="386" y="80" font-size="9" fill="#867D90">snapshot-style · partner-scoped</text>
+            <line x1="380" y1="88" x2="720" y2="88" stroke="#59A679" stroke-width="0.5"/>
+            <g font-size="10" font-family="JetBrains Mono, monospace" fill="#100618">
+              <text x="386" y="104">id (PK · UUID)</text>
+              <text x="386" y="118">customer_id  ·  patient_id  ·  partner_id (NN)</text>
+              <text x="386" y="132">customer_full_name · email · doc_number · doc_type</text>
+              <text x="386" y="146">delivery_street · number · city · postal_code · …</text>
+              <text x="386" y="160">prescription_id · prescription_url_snapshot</text>
+              <text x="386" y="174">prescribing_staff_full_name · doc_number · state</text>
+              <text x="386" y="188">currency · total_cents</text>
+              <text x="386" y="202">channel · pharmacy_provider · external_order_id</text>
+              <text x="386" y="216">payment_status · fulfillment_status · placed_at</text>
+              <text x="386" y="230">+ inserted_at · updated_at · deleted_at</text>
+            </g>
+          </g>
+          <g><rect x="40" y="60" width="280" height="120" rx="12" fill="#DEEDE4" stroke="#59A679" stroke-width="1.5"/>
+            <text x="56" y="85" font-size="13" font-weight="700" fill="#2D6A48">order_items</text>
+            <text x="56" y="100" font-size="9" fill="#867D90">partner-scope via OrderModel</text>
+            <line x1="50" y1="108" x2="310" y2="108" stroke="#59A679" stroke-width="0.5"/>
+            <g font-size="10" font-family="JetBrains Mono, monospace" fill="#100618">
+              <text x="56" y="124">id · order_id (FK)</text>
+              <text x="56" y="138">sku · quantity · unit_price_cents</text>
+              <text x="56" y="152">requires_prescription · is_subsidized</text>
+              <text x="56" y="170">+ inherited timestamps</text>
+            </g>
+          </g>
+          <g><rect x="780" y="40" width="290" height="200" rx="12" fill="#DEEDE4" stroke="#59A679" stroke-width="1.5"/>
+            <text x="796" y="65" font-size="13" font-weight="700" fill="#2D6A48">order_status_events</text>
+            <text x="796" y="80" font-size="9" fill="#867D90">append-only · UPDATE/DELETE revoked</text>
+            <g transform="translate(1020, 48)"><rect x="0" y="0" width="40" height="20" rx="10" fill="#100618"/><text x="20" y="14" font-size="9" font-family="JetBrains Mono, monospace" fill="#FFFFFF" text-anchor="middle">LOCK</text></g>
+            <line x1="790" y1="88" x2="1060" y2="88" stroke="#59A679" stroke-width="0.5"/>
+            <g font-size="10" font-family="JetBrains Mono, monospace" fill="#100618">
+              <text x="796" y="104">id · order_id (FK)</text>
+              <text x="796" y="120">from_fulfillment_status</text>
+              <text x="796" y="134">to_fulfillment_status</text>
+              <text x="796" y="148">from_payment_status · to_payment_status</text>
+              <text x="796" y="164">actor_kind  (WORKFLOW | WEBHOOK | RECONCILIATION)</text>
+              <text x="796" y="178">actor_ref</text>
+              <text x="796" y="194">caused_by_webhook_event_id (FK · nullable)</text>
+              <text x="796" y="210">occurred_at · inserted_at</text>
+            </g>
+          </g>
+          <g><rect x="40" y="280" width="320" height="140" rx="12" fill="#ECE7F7" stroke="#735ABF" stroke-width="1.5"/>
+            <text x="56" y="305" font-size="13" font-weight="700" fill="#453281">products</text>
+            <text x="56" y="320" font-size="9" fill="#867D90">cross-channel · partner-agnostic</text>
+            <line x1="50" y1="328" x2="350" y2="328" stroke="#735ABF" stroke-width="0.5"/>
+            <g font-size="10" font-family="JetBrains Mono, monospace" fill="#100618">
+              <text x="56" y="344">id · sku · channel  (enum)</text>
+              <text x="56" y="358">display_name · image_url · category</text>
+              <text x="56" y="372">requires_prescription · is_active</text>
+              <text x="56" y="386">last_known_price_cents · last_synced_at</text>
+              <text x="56" y="400">channel_metadata  JSONB</text>
+              <text x="56" y="414">+ inherited timestamps</text>
+            </g>
+          </g>
+          <g><rect x="400" y="290" width="290" height="130" rx="12" fill="#FBF8E9" stroke="#E4CF67" stroke-width="1.5"/>
+            <text x="416" y="315" font-size="13" font-weight="700" fill="#A88E1A">pharmacy_prescription_uploads</text>
+            <text x="416" y="330" font-size="9" fill="#867D90">per-channel extension · joins via OrderModel</text>
+            <line x1="410" y1="338" x2="680" y2="338" stroke="#E4CF67" stroke-width="0.5"/>
+            <g font-size="10" font-family="JetBrains Mono, monospace" fill="#100618">
+              <text x="416" y="354">id · order_id (FK)</text>
+              <text x="416" y="368">external_prescription_id  ← Xis</text>
+              <text x="416" y="382">file_url_snapshot</text>
+              <text x="416" y="396">prescriptor_full_name · doc_number</text>
+              <text x="416" y="410">+ inherited timestamps</text>
+            </g>
+          </g>
+          <g><rect x="730" y="280" width="340" height="170" rx="12" fill="#FBF8E9" stroke="#E4CF67" stroke-width="1.5"/>
+            <text x="746" y="305" font-size="13" font-weight="700" fill="#A88E1A">pharmacy_webhook_events</text>
+            <text x="746" y="320" font-size="9" fill="#867D90">append-only · UPDATE/DELETE revoked</text>
+            <g transform="translate(1020, 288)"><rect x="0" y="0" width="40" height="20" rx="10" fill="#100618"/><text x="20" y="14" font-size="9" font-family="JetBrains Mono, monospace" fill="#FFFFFF" text-anchor="middle">LOCK</text></g>
+            <line x1="740" y1="328" x2="1060" y2="328" stroke="#E4CF67" stroke-width="0.5"/>
+            <g font-size="10" font-family="JetBrains Mono, monospace" fill="#100618">
+              <text x="746" y="344">id · pharmacy_provider · provider_event_id</text>
+              <text x="746" y="358">UNIQUE (pharmacy_provider, provider_event_id)</text>
+              <text x="746" y="372">event_kind  (fulfillment | unknown)</text>
+              <text x="746" y="386">order_id (FK · nullable for orphans)</text>
+              <text x="746" y="400">received_at · raw_payload_redacted JSONB</text>
+              <text x="746" y="414">redactor_version (int) · processing_error</text>
+              <text x="746" y="428">actor_kind · actor_ref</text>
+              <text x="746" y="442">+ inserted_at</text>
+            </g>
+          </g>
+          <line x1="320" y1="120" x2="370" y2="120" stroke="#867D90" stroke-width="1.2" marker-end="url(#arr-fk)"/>
+          <text x="345" y="115" font-size="9" fill="#867D90" text-anchor="middle">FK</text>
+          <line x1="730" y1="140" x2="780" y2="140" stroke="#867D90" stroke-width="1.2" marker-end="url(#arr-fk)"/>
+          <text x="755" y="135" font-size="9" fill="#867D90" text-anchor="middle">FK</text>
+          <line x1="540" y1="240" x2="540" y2="290" stroke="#867D90" stroke-width="1.2" marker-end="url(#arr-fk)"/>
+          <text x="555" y="265" font-size="9" fill="#867D90">FK · order_id</text>
+          <line x1="900" y1="280" x2="900" y2="240" stroke="#867D90" stroke-width="1.2" stroke-dasharray="3,3" marker-end="url(#arr-fk)"/>
+          <text x="915" y="265" font-size="9" fill="#867D90">FK · order_id</text>
+          <path d="M 925,290 Q 1090,260 1075,210" stroke="#867D90" stroke-width="1.2" stroke-dasharray="3,3" fill="none" marker-end="url(#arr-fk)"/>
+          <text x="1080" y="270" font-size="9" fill="#867D90" text-anchor="end">caused_by</text>
+          <text x="1080" y="282" font-size="9" fill="#867D90" text-anchor="end">_webhook_event_id</text>
+          <line x1="180" y1="280" x2="180" y2="180" stroke="#867D90" stroke-width="1.2" stroke-dasharray="3,3"/>
+          <text x="195" y="225" font-size="9" fill="#867D90">sku reference</text>
+          <text x="195" y="237" font-size="9" fill="#867D90">(no FK)</text>
+          <g transform="translate(60, 510)">
+            <rect x="0" y="0" width="980" height="80" rx="10" fill="#F5F6FA" stroke="#E6E3E8"/>
+            <text x="20" y="22" font-size="11" font-weight="600" fill="#100618">Color = subdomain</text>
+            <g transform="translate(180, 14)"><rect width="14" height="14" rx="3" fill="#DEEDE4" stroke="#59A679"/><text x="20" y="11" font-size="11" fill="#100618">orders/</text></g>
+            <g transform="translate(280, 14)"><rect width="14" height="14" rx="3" fill="#ECE7F7" stroke="#735ABF"/><text x="20" y="11" font-size="11" fill="#100618">catalog/</text></g>
+            <g transform="translate(380, 14)"><rect width="14" height="14" rx="3" fill="#FBF8E9" stroke="#E4CF67"/><text x="20" y="11" font-size="11" fill="#100618">pharmacy/</text></g>
+            <g transform="translate(500, 14)"><rect width="36" height="14" rx="7" fill="#100618"/><text x="18" y="11" font-size="9" font-family="JetBrains Mono, monospace" fill="#FFFFFF" text-anchor="middle">LOCK</text><text x="44" y="11" font-size="11" fill="#100618">append-only at DB level</text></g>
+            <text x="20" y="50" font-size="11" fill="#867D90">Cross-domain references stored as plain UUIDs — never FKs. Snapshot fields denormalize the related entity at order-create time</text>
+            <text x="20" y="64" font-size="11" fill="#867D90">so cross-domain deletes don't cascade.</text>
+          </g>
+        </svg>
+        <div class="svg-caption">5 commerce tables · color-coded by subdomain · solid arrows = FK · dashed = nullable FK / soft reference</div>
+      </div>
+    </section>
+
+    <!-- ─── State machine ─── -->
+    <section id="state-machine">
+      <div class="section-eyebrow">State mapping</div>
+      <h2>11 Xis statuses → 1 normalized fulfillment enum.</h2>
+      <p class="lede">Fulfillment is a strict forward-only state machine. Backward transitions are rejected with an audit row carrying <code>processing_error="backward transition rejected"</code>.</p>
+
+      <div class="grid-2">
+        <div>
+          <table>
+            <thead>
+              <tr><th>Xis status</th><th>Normalized</th><th>Terminal</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="mono">pending</td><td><span class="pill pill-muted">no transition</span></td><td>—</td></tr>
+              <tr><td class="mono">confirmed</td><td><span class="pill pill-primary">PLACED</span></td><td>—</td></tr>
+              <tr><td class="mono">processing</td><td><span class="pill pill-primary">PROCESSING</span></td><td>—</td></tr>
+              <tr><td class="mono">picking</td><td><span class="pill pill-primary">PICKING</span></td><td>—</td></tr>
+              <tr><td class="mono">invoicing</td><td><span class="pill pill-primary">INVOICING</span></td><td>—</td></tr>
+              <tr><td class="mono">ready_to_leave</td><td><span class="pill pill-primary">READY_TO_SHIP</span></td><td>—</td></tr>
+              <tr><td class="mono">out_for_delivery</td><td><span class="pill pill-primary">OUT_FOR_DELIVERY</span></td><td>—</td></tr>
+              <tr><td class="mono">delivered</td><td><span class="pill pill-success">DELIVERED</span></td><td>success</td></tr>
+              <tr><td class="mono">returned</td><td><span class="pill pill-warning">RETURNED</span></td><td>terminal</td></tr>
+              <tr><td class="mono">failed</td><td><span class="pill pill-error">FAILED</span></td><td>operator-actionable</td></tr>
+              <tr><td class="mono">canceled</td><td><span class="pill pill-error">CANCELLED</span></td><td>terminal</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="svg-frame" style="padding:var(--s-16)">
+          <svg viewBox="0 0 460 480" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono, monospace">
+            <defs>
+              <marker id="arr-state" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#735ABF"/></marker>
+              <marker id="arr-state-ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#59A679"/></marker>
+              <marker id="arr-state-err" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#DA4167"/></marker>
+              <marker id="arr-state-warn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#E4CF67"/></marker>
+            </defs>
+            <rect x="160" y="20" width="140" height="38" rx="8" fill="#100618"/>
+            <text x="230" y="44" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">PLACING</text>
+            <line x1="230" y1="58" x2="230" y2="78" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-state)"/>
+            <rect x="160" y="80" width="140" height="38" rx="8" fill="#ECE7F7" stroke="#735ABF" stroke-width="1.5"/>
+            <text x="230" y="104" font-size="12" font-weight="600" fill="#453281" text-anchor="middle">PLACED</text>
+            <line x1="230" y1="118" x2="230" y2="138" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-state)"/>
+            <rect x="160" y="140" width="140" height="38" rx="8" fill="#ECE7F7" stroke="#735ABF" stroke-width="1.5"/>
+            <text x="230" y="164" font-size="12" font-weight="600" fill="#453281" text-anchor="middle">PROCESSING</text>
+            <line x1="230" y1="178" x2="230" y2="198" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-state)"/>
+            <rect x="160" y="200" width="140" height="38" rx="8" fill="#ECE7F7" stroke="#735ABF" stroke-width="1.5"/>
+            <text x="230" y="224" font-size="12" font-weight="600" fill="#453281" text-anchor="middle">PICKING</text>
+            <line x1="230" y1="238" x2="230" y2="258" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-state)"/>
+            <rect x="160" y="260" width="140" height="38" rx="8" fill="#ECE7F7" stroke="#735ABF" stroke-width="1.5"/>
+            <text x="230" y="284" font-size="12" font-weight="600" fill="#453281" text-anchor="middle">INVOICING</text>
+            <line x1="230" y1="298" x2="230" y2="318" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-state)"/>
+            <rect x="160" y="320" width="140" height="38" rx="8" fill="#ECE7F7" stroke="#735ABF" stroke-width="1.5"/>
+            <text x="230" y="344" font-size="11" font-weight="600" fill="#453281" text-anchor="middle">READY_TO_SHIP</text>
+            <line x1="230" y1="358" x2="230" y2="378" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-state)"/>
+            <rect x="140" y="380" width="180" height="38" rx="8" fill="#ECE7F7" stroke="#735ABF" stroke-width="1.5"/>
+            <text x="230" y="404" font-size="11" font-weight="600" fill="#453281" text-anchor="middle">OUT_FOR_DELIVERY</text>
+            <line x1="230" y1="418" x2="180" y2="446" stroke="#59A679" stroke-width="1.5" marker-end="url(#arr-state-ok)"/>
+            <line x1="230" y1="418" x2="280" y2="446" stroke="#E4CF67" stroke-width="1.5" marker-end="url(#arr-state-warn)"/>
+            <rect x="100" y="448" width="120" height="32" rx="8" fill="#DEEDE4" stroke="#59A679" stroke-width="2"/>
+            <text x="160" y="468" font-size="11" font-weight="600" fill="#2D6A48" text-anchor="middle">DELIVERED</text>
+            <rect x="240" y="448" width="120" height="32" rx="8" fill="#FBF8E9" stroke="#E4CF67" stroke-width="2"/>
+            <text x="300" y="468" font-size="11" font-weight="600" fill="#A88E1A" text-anchor="middle">RETURNED</text>
+            <rect x="350" y="120" width="100" height="32" rx="8" fill="#F7D4DD" stroke="#DA4167" stroke-width="2"/>
+            <text x="400" y="140" font-size="11" font-weight="600" fill="#8E1B36" text-anchor="middle">FAILED</text>
+            <rect x="350" y="170" width="100" height="32" rx="8" fill="#F7D4DD" stroke="#DA4167" stroke-width="2"/>
+            <text x="400" y="190" font-size="11" font-weight="600" fill="#8E1B36" text-anchor="middle">CANCELLED</text>
+            <line x1="300" y1="180" x2="350" y2="148" stroke="#DA4167" stroke-width="1.2" marker-end="url(#arr-state-err)" stroke-dasharray="3,3"/>
+            <line x1="300" y1="180" x2="350" y2="186" stroke="#DA4167" stroke-width="1.2" marker-end="url(#arr-state-err)" stroke-dasharray="3,3"/>
+            <text x="20" y="40" font-size="9" fill="#867D90" font-family="Outfit, sans-serif">initial</text>
+            <text x="20" y="100" font-size="9" fill="#867D90" font-family="Outfit, sans-serif">Xis confirmed</text>
+            <text x="380" y="226" font-size="9" fill="#867D90" font-family="Outfit, sans-serif" text-anchor="middle">terminal failures</text>
+            <text x="380" y="240" font-size="9" fill="#867D90" font-family="Outfit, sans-serif" text-anchor="middle">from any state</text>
+          </svg>
+          <div class="svg-caption">Forward-only fulfillment state machine</div>
+        </div>
+      </div>
+
+      <div class="callout warning" style="margin-top:var(--s-24)">
+        <div class="callout-label">Payment status, separately</div>
+        <code>payment_status</code> is mutated only by Vindi-driven paths: <code>charge_activity</code>, the Vindi <code>bill.paid</code> webhook, and <code>expire_stale_charges_routine</code>. Sequence: <code>PENDING → AWAITING_GATEWAY → PAID</code> · or <code>PENDING → FAILED</code> · or <code>HYDRATION_FAILED</code> (S3 read exhausted) before any charge attempt.
+      </div>
+    </section>
+
+    <footer class="page-footer">
+      <div class="footer-grid">
+        <div>
+          <h4>Source documents</h4>
+          <ul>
+            <li><a href="../2026-05-07-commerce-domain.md">2026-05-07-commerce-domain.md</a> · spec</li>
+            <li><a href="../2026-05-07-commerce-domain-implementation-plan.md">2026-05-07-commerce-domain-implementation-plan.md</a> · plan</li>
+            <li><a href="https://linear.app/liti/issue/ENG-8165/novo-dominio-commerce">Linear · ENG-8165</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>About this document</h4>
+          <p style="color:var(--text-light); font-size:14px; line-height:1.6">A multi-page mini-site companion. Auto-regeneratable via <code style="background:transparent; color:var(--primary-light)">/visualize-plan</code>.</p>
+          <p style="color:var(--text-light); font-size:13px; margin-top:var(--s-12); font-family:var(--ff-mono)">Visual identity · Liti mobile design system<br>Outfit · #735ABF · #59A679</p>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>

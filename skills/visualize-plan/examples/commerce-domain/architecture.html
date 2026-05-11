@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commerce Domain — Architecture</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--primary:#735ABF;--primary-dark:#453281;--primary-light:#B1A3DB;--primary-tint:#ECE7F7;--success:#59A679;--success-light:#DEEDE4;--error:#DA4167;--error-light:#F7D4DD;--warning:#E4CF67;--warning-light:#FBF8E9;--bg:#F5F6FA;--surface:#FFFFFF;--surface-alt:#FAFAFC;--text-dark:#100618;--text-strong:#867D90;--text-light:#BDB7C5;--text-on-brand:#FFFFFF;--stroke:#E6E3E8;--stroke-soft:#BDB7C5;--s-2:2px;--s-4:4px;--s-6:6px;--s-8:8px;--s-10:10px;--s-12:12px;--s-16:16px;--s-20:20px;--s-24:24px;--s-32:32px;--s-40:40px;--s-48:48px;--s-64:64px;--r-4:4px;--r-8:8px;--r-12:12px;--r-16:16px;--r-24:24px;--r-32:32px;--r-full:999px;--ff-sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--ff-mono:'JetBrains Mono','SF Mono',Consolas,monospace;--side-menu-w:280px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{font-family:var(--ff-sans);background:var(--bg);color:var(--text-dark);line-height:1.5;font-size:16px;font-weight:400;letter-spacing:-0.005em}
+  .shell{display:flex;min-height:100vh}
+  .side-menu{width:var(--side-menu-w);flex-shrink:0;background:var(--surface);border-right:1px solid var(--stroke);position:sticky;top:0;align-self:flex-start;height:100vh;overflow-y:auto;padding:var(--s-24) var(--s-20)}
+  .page-main{flex:1;min-width:0;padding:var(--s-48) var(--s-32);max-width:960px}
+  .side-menu-top{padding-bottom:var(--s-16);border-bottom:1px solid var(--stroke);margin-bottom:var(--s-16)}
+  .breadcrumb{display:inline-block;font-family:var(--ff-mono);font-size:12px;color:var(--primary);text-decoration:none;border:none;margin-bottom:var(--s-12);font-weight:500}
+  .breadcrumb:hover{color:var(--primary-dark)}
+  .spec-meta{display:flex;flex-direction:column;gap:var(--s-2)}
+  .spec-meta .eyebrow{font-family:var(--ff-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-dark)}
+  .spec-meta .last-updated{font-family:var(--ff-mono);font-size:11px;color:var(--text-strong)}
+  .side-menu nav{margin-bottom:var(--s-20)}
+  .side-menu nav h4{font-family:var(--ff-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-strong);margin-bottom:var(--s-8);padding:0 var(--s-8)}
+  .side-menu nav ul{list-style:none;padding:0}
+  .side-menu nav li{margin-bottom:var(--s-2)}
+  .side-menu nav a{display:block;padding:var(--s-6) var(--s-8);font-size:14px;color:var(--text-strong);text-decoration:none;border-radius:var(--r-8);transition:background .15s,color .15s;border-left:2px solid transparent}
+  .side-menu nav a:hover{background:var(--bg);color:var(--text-dark)}
+  .side-menu nav a.current{background:var(--primary-tint);color:var(--primary-dark);font-weight:600;border-left-color:var(--primary)}
+  .side-menu-anchors a{font-family:var(--ff-mono);font-size:12px;padding-left:var(--s-12)}
+  .page-header{margin-bottom:var(--s-40)}
+  .page-eyebrow{font-family:var(--ff-mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary);margin-bottom:var(--s-12)}
+  h1{font-size:40px;font-weight:600;letter-spacing:-0.025em;line-height:1.1;margin-bottom:var(--s-12)}
+  h2{font-size:28px;font-weight:600;letter-spacing:-0.02em;line-height:1.2;margin-bottom:var(--s-12)}
+  h3{font-size:18px;font-weight:600;letter-spacing:-0.01em;margin-bottom:var(--s-8)}
+  h4{font-size:13px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;color:var(--text-strong)}
+  p{font-size:16px;color:var(--text-dark);margin-bottom:var(--s-12)}
+  p.lede{font-size:18px;color:var(--text-strong);max-width:780px;margin-bottom:var(--s-16)}
+  code{font-family:var(--ff-mono);font-size:0.9em;background:var(--bg);padding:1px 5px;border-radius:var(--r-4)}
+  a{color:var(--primary);text-decoration:none;border-bottom:1px solid var(--primary-light);transition:opacity .15s}
+  a:hover{opacity:0.7}
+  section{padding:var(--s-32) 0;border-top:1px solid var(--stroke);scroll-margin-top:var(--s-24)}
+  section:first-of-type{border-top:none;padding-top:0}
+  .section-eyebrow{font-family:var(--ff-mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary);margin-bottom:var(--s-12)}
+  .card{background:var(--surface);border:1px solid var(--stroke);border-radius:var(--r-16);padding:var(--s-24)}
+  .card-accent{border-top:3px solid var(--primary)}
+  .card-success{border-top:3px solid var(--success)}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-20)}
+  .callout{background:var(--primary-tint);border-left:3px solid var(--primary);padding:var(--s-16) var(--s-20);border-radius:0 var(--r-8) var(--r-8) 0;margin:var(--s-20) 0}
+  .callout.success{background:var(--success-light);border-color:var(--success)}
+  .callout-label{font-family:var(--ff-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary);margin-bottom:var(--s-4)}
+  .callout.success .callout-label{color:var(--success)}
+  ul.clean{list-style:none;padding:0}
+  ul.clean li{position:relative;padding-left:var(--s-20);margin-bottom:var(--s-8);font-size:15px;color:var(--text-dark)}
+  ul.clean li::before{content:"";position:absolute;left:0;top:9px;width:8px;height:2px;background:var(--primary);border-radius:1px}
+  ul.clean li code{background:var(--bg);padding:1px 5px;border-radius:var(--r-4);font-size:13px}
+  .svg-frame{background:var(--surface);border:1px solid var(--stroke);border-radius:var(--r-16);padding:var(--s-24);overflow:hidden}
+  .svg-frame svg{width:100%;height:auto;display:block}
+  .svg-caption{font-family:var(--ff-mono);font-size:11px;color:var(--text-strong);margin-top:var(--s-12);text-align:center}
+  .legend{display:flex;flex-wrap:wrap;gap:var(--s-16);padding:var(--s-12) var(--s-16);background:var(--surface-alt);border-radius:var(--r-8);margin-bottom:var(--s-20);font-size:12px}
+  .legend-item{display:flex;align-items:center;gap:var(--s-6);color:var(--text-strong);font-family:var(--ff-mono)}
+  .legend-swatch{width:14px;height:14px;border-radius:var(--r-4);border:1px solid var(--stroke)}
+  footer.page-footer{background:var(--text-dark);color:var(--text-light);padding:var(--s-40) var(--s-32);margin:var(--s-48) calc(-1 * var(--s-32)) calc(-1 * var(--s-48));font-size:14px}
+  footer.page-footer .footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-32)}
+  footer.page-footer h4{color:var(--text-on-brand);margin-bottom:var(--s-12)}
+  footer.page-footer a{color:var(--primary-light);border-color:var(--primary-light)}
+  footer.page-footer ul{list-style:none;padding:0}
+  footer.page-footer li{margin-bottom:var(--s-8);font-family:var(--ff-mono);font-size:13px}
+  @media (max-width:900px){.shell{flex-direction:column}.side-menu{position:static;width:100%;height:auto;border-right:none;border-bottom:1px solid var(--stroke)}.page-main{padding:var(--s-24) var(--s-20);max-width:100%}.grid-2{grid-template-columns:1fr}h1{font-size:32px}h2{font-size:22px}footer.page-footer .footer-grid{grid-template-columns:1fr}footer.page-footer{margin:var(--s-32) calc(-1 * var(--s-20)) calc(-1 * var(--s-24));padding:var(--s-32) var(--s-20)}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <aside class="side-menu">
+    <div class="side-menu-top">
+      <a class="breadcrumb" href="index.html">← Commerce Domain</a>
+      <div class="spec-meta">
+        <span class="eyebrow">ENG-8165 · v0.2</span>
+        <span class="last-updated">Updated 2026-05-09</span>
+      </div>
+    </div>
+    <nav class="side-menu-pages">
+      <h4>Pages</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="architecture.html" class="current">Architecture</a></li>
+        <li><a href="flows.html">Flows</a></li>
+        <li><a href="data-model.html">Data model</a></li>
+        <li><a href="api.html">API reference</a></li>
+        <li><a href="deployment.html">Deployment</a></li>
+        <li><a href="roadmap.html">Roadmap</a></li>
+      </ul>
+    </nav>
+    <nav class="side-menu-anchors">
+      <h4>On this page</h4>
+      <ul>
+        <li><a href="#overview">High-level architecture</a></li>
+        <li><a href="#subdomains">Subdomain layout</a></li>
+        <li><a href="#extensibility">Extensibility</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="page-main">
+
+    <header class="page-header">
+      <div class="page-eyebrow">Chapter 01 · Architecture</div>
+      <h1>Architecture</h1>
+      <p class="lede">One client · one app · one domain · one worker. The commerce process is the only thing that talks to Vindi and Xis. Everything else (continuous_care, customer_lifecycle) is read-only context for the order-create middleware.</p>
+    </header>
+
+    <!-- ─── Overview ─── -->
+    <section id="overview">
+      <div class="section-eyebrow">High-level architecture</div>
+      <h2>Client → FastAPI → domain + worker → lib adapters.</h2>
+      <p class="lede">Routers stay single-domain — only import <code>domains.commerce</code>. Cross-domain hydration happens in middleware.</p>
+
+      <div class="legend">
+        <div class="legend-item"><span class="legend-swatch" style="background:#ECE7F7; border-color:#735ABF"></span>commerce_app · FastAPI</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:#DEEDE4; border-color:#59A679"></span>commerce_worker · Temporal</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:#FBF8E9; border-color:#E4CF67"></span>lib/ adapters</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:#FFFFFF; border-color:#BDB7C5"></span>cross-domain RO reads</div>
+      </div>
+
+      <div class="svg-frame">
+        <svg viewBox="0 0 1100 720" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono, monospace">
+          <defs>
+            <marker id="arrow-arch" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#735ABF"/></marker>
+            <marker id="arrow-arch-olive" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#59A679"/></marker>
+          </defs>
+          <g><rect x="430" y="20" width="240" height="46" rx="10" fill="#100618"/><text x="550" y="48" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">Mobile · PCI client</text></g>
+          <line x1="550" y1="66" x2="550" y2="100" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arrow-arch)"/>
+          <g><rect x="60" y="105" width="980" height="220" rx="16" fill="#FFFFFF" stroke="#735ABF" stroke-width="2"/>
+            <text x="80" y="135" font-size="13" font-weight="600" fill="#735ABF">FastAPI · commerce_app on Fly.io · liti-commerce</text>
+            <rect x="80" y="155" width="280" height="70" rx="10" fill="#ECE7F7" stroke="#735ABF" stroke-width="1.5"/>
+            <text x="220" y="178" font-size="12" font-weight="600" fill="#100618" text-anchor="middle">middlewares/commerce/</text>
+            <text x="220" y="195" font-size="10" fill="#867D90" text-anchor="middle">order_request_context_middleware</text>
+            <text x="220" y="210" font-size="10" fill="#867D90" text-anchor="middle">loads customer + patient + prescription</text>
+            <rect x="80" y="240" width="280" height="70" rx="10" fill="#ECE7F7" stroke="#735ABF" stroke-width="1.5"/>
+            <text x="220" y="263" font-size="12" font-weight="600" fill="#735ABF" text-anchor="middle">pygeia main · commerce_bff/v1/</text>
+            <text x="220" y="280" font-size="10" fill="#867D90" text-anchor="middle">GET /commerce/v1/home/prescribed_purchases</text>
+            <text x="220" y="295" font-size="10" fill="#735ABF" font-weight="600" text-anchor="middle">composes prescription + sku + price</text>
+            <rect x="380" y="240" width="280" height="70" rx="10" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/>
+            <text x="520" y="263" font-size="12" font-weight="600" fill="#100618" text-anchor="middle">routers/commerce/v1/orders/</text>
+            <text x="520" y="280" font-size="10" fill="#867D90" text-anchor="middle">preview · create · list · detail</text>
+            <text x="520" y="295" font-size="10" fill="#735ABF" font-weight="600" text-anchor="middle">single-domain</text>
+            <rect x="680" y="240" width="280" height="70" rx="10" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/>
+            <text x="820" y="263" font-size="12" font-weight="600" fill="#100618" text-anchor="middle">routers/commerce/v1/webhooks/</text>
+            <text x="820" y="280" font-size="10" fill="#867D90" text-anchor="middle">/payments/{provider} · /pharmacies/{provider}</text>
+            <text x="820" y="295" font-size="10" fill="#735ABF" font-weight="600" text-anchor="middle">provider-agnostic</text>
+          </g>
+          <g><rect x="60" y="345" width="700" height="200" rx="16" fill="#F5F6FA" stroke="#735ABF" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <text x="80" y="375" font-size="13" font-weight="600" fill="#100618">domains/commerce/  (CI-isolated)</text>
+            <rect x="80" y="395" width="120" height="50" rx="8" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/>
+            <text x="140" y="416" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">main.py</text>
+            <text x="140" y="432" font-size="10" fill="#867D90" text-anchor="middle">facade</text>
+            <rect x="220" y="395" width="160" height="50" rx="8" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/>
+            <text x="300" y="412" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">catalog/</text>
+            <text x="300" y="427" font-size="9" fill="#867D90" text-anchor="middle">GLP-1 SKUs · medication_sku_mapping</text>
+            <rect x="400" y="395" width="160" height="50" rx="8" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/>
+            <text x="480" y="412" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">orders/</text>
+            <text x="480" y="427" font-size="9" fill="#867D90" text-anchor="middle">preview · create · transitions</text>
+            <rect x="580" y="395" width="160" height="50" rx="8" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/>
+            <text x="660" y="412" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">pharmacy/</text>
+            <text x="660" y="427" font-size="9" fill="#867D90" text-anchor="middle">apply_webhook_event</text>
+            <g><ellipse cx="220" cy="490" rx="135" ry="12" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/>
+              <rect x="85" y="490" width="270" height="35" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/>
+              <ellipse cx="220" cy="525" rx="135" ry="12" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/>
+              <line x1="85" y1="490" x2="85" y2="525" stroke="#735ABF" stroke-width="1.5"/>
+              <line x1="355" y1="490" x2="355" y2="525" stroke="#735ABF" stroke-width="1.5"/>
+              <text x="220" y="510" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">commerce DB · 5 tables</text>
+              <text x="220" y="540" font-size="10" fill="#867D90" text-anchor="middle">2 append-only · partner-scoped</text></g>
+            <rect x="400" y="495" width="160" height="35" rx="8" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/>
+            <text x="480" y="517" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">message_broker_publisher</text>
+            <rect x="580" y="495" width="160" height="35" rx="8" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/>
+            <text x="660" y="517" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">enums + entities</text>
+          </g>
+          <g><rect x="780" y="345" width="260" height="200" rx="16" fill="#DEEDE4" stroke="#59A679" stroke-width="2"/>
+            <text x="800" y="375" font-size="13" font-weight="600" fill="#2D6A48">commerce_worker</text>
+            <text x="800" y="392" font-size="10" fill="#2D6A48" font-family="JetBrains Mono, monospace">task queue · commerce-default</text>
+            <rect x="800" y="405" width="220" height="32" rx="8" fill="#FFFFFF" stroke="#59A679" stroke-width="1.5"/>
+            <text x="910" y="425" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">place_pharmacy_order_workflow</text>
+            <rect x="800" y="445" width="220" height="32" rx="8" fill="#FFFFFF" stroke="#59A679" stroke-width="1.5"/>
+            <text x="910" y="465" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">fulfill_pharmacy_order_workflow</text>
+            <rect x="800" y="485" width="220" height="40" rx="8" fill="#FFFFFF" stroke="#59A679" stroke-width="1.5"/>
+            <text x="910" y="503" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">routines</text>
+            <text x="910" y="518" font-size="9" fill="#867D90" text-anchor="middle">stuck · reconcile · expire-stale</text>
+          </g>
+          <g><rect x="60" y="565" width="980" height="120" rx="16" fill="#FBF8E9" stroke="#E4CF67" stroke-width="2"/>
+            <text x="80" y="592" font-size="13" font-weight="600" fill="#A88E1A">lib/  (no domain imports)</text>
+            <rect x="80" y="610" width="220" height="55" rx="8" fill="#FFFFFF" stroke="#E4CF67" stroke-width="1.5"/>
+            <text x="190" y="632" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">payment_providers/</text>
+            <text x="190" y="650" font-size="9" fill="#867D90" text-anchor="middle">vindi_v1 + mocked + factory</text>
+            <rect x="320" y="610" width="220" height="55" rx="8" fill="#FFFFFF" stroke="#E4CF67" stroke-width="1.5"/>
+            <text x="430" y="632" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">pharmacy_providers/</text>
+            <text x="430" y="650" font-size="9" fill="#867D90" text-anchor="middle">xis_farmacia_v1 + mocked + routing</text>
+            <rect x="560" y="610" width="200" height="55" rx="8" fill="#FFFFFF" stroke="#E4CF67" stroke-width="1.5"/>
+            <text x="660" y="632" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">storage/S3Adapter</text>
+            <text x="660" y="650" font-size="9" fill="#867D90" text-anchor="middle">prescription file fetch</text>
+            <rect x="780" y="610" width="240" height="55" rx="8" fill="#FFFFFF" stroke="#E4CF67" stroke-width="1.5"/>
+            <text x="900" y="632" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">observability_redactor/</text>
+            <text x="900" y="650" font-size="9" fill="#867D90" text-anchor="middle">PII redaction · allowlist-by-shape</text>
+          </g>
+          <line x1="220" y1="310" x2="220" y2="395" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arrow-arch)"/>
+          <line x1="520" y1="310" x2="520" y2="395" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arrow-arch)"/>
+          <line x1="820" y1="310" x2="820" y2="395" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arrow-arch)"/>
+          <line x1="800" y1="425" x2="380" y2="425" stroke="#59A679" stroke-width="1.5" marker-end="url(#arrow-arch-olive)" stroke-dasharray="3,2"/>
+          <line x1="190" y1="540" x2="190" y2="610" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arrow-arch)"/>
+          <line x1="430" y1="540" x2="430" y2="610" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arrow-arch)"/>
+          <line x1="660" y1="540" x2="660" y2="610" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arrow-arch)"/>
+          <line x1="900" y1="540" x2="900" y2="610" stroke="#59A679" stroke-width="1.5" marker-end="url(#arrow-arch-olive)" stroke-dasharray="3,2"/>
+          <text x="370" y="195" font-size="10" font-family="JetBrains Mono, monospace" fill="#867D90">RO ←→</text>
+          <text x="370" y="210" font-size="10" font-family="JetBrains Mono, monospace" fill="#867D90">cont_care + cust_lc</text>
+        </svg>
+        <div class="svg-caption">commerce_app + commerce_worker + lib/ adapters · cross-domain reads through middleware only</div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-label">Why a middleware (not a router-level orchestrator)</div>
+        Routers stay single-domain — only import <code>domains.commerce</code>. Cross-domain hydration (Customer, Patient, Prescription) lives in <code>web_api/middlewares/commerce/</code>, which the cross-domain-import CI script doesn't scan. The router only ever sees pre-hydrated objects on <code>request.state</code>.
+      </div>
+    </section>
+
+    <!-- ─── Subdomains ─── -->
+    <section id="subdomains">
+      <div class="section-eyebrow">Subdomain layout</div>
+      <h2>Three subdomains v1 — and what stays out.</h2>
+      <p class="lede">Inside <code>commerce/</code>: catalog (cross-channel), orders (channel-agnostic lifecycle), pharmacy (channel-specific extensions). Future channels plug in alongside <code>pharmacy/</code> as new subdomains.</p>
+
+      <div class="svg-frame">
+        <svg viewBox="0 0 1100 540" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono, monospace">
+          <defs><marker id="arrow-out" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#DA4167"/></marker></defs>
+          <rect x="40" y="40" width="650" height="460" rx="20" fill="#FFFFFF" stroke="#735ABF" stroke-width="2"/>
+          <text x="60" y="70" font-size="14" font-weight="600" fill="#735ABF">domains/commerce/</text>
+          <text x="60" y="88" font-size="11" fill="#867D90">DDD bounded context · catalog + cart + orders + future</text>
+          <rect x="60" y="110" width="610" height="115" rx="12" fill="#ECE7F7" stroke="#735ABF" stroke-width="1.5"/>
+          <text x="80" y="135" font-size="13" font-weight="600" fill="#453281">catalog/</text>
+          <text x="80" y="152" font-size="10" fill="#867D90">cross-channel products · channel-discriminated table · channel-agnostic interactors</text>
+          <rect x="80" y="165" width="280" height="22" rx="6" fill="#FFFFFF" stroke="#B1A3DB"/>
+          <text x="220" y="180" font-size="10" fill="#100618" text-anchor="middle">entities/catalog/product.py</text>
+          <rect x="80" y="192" width="280" height="22" rx="6" fill="#FFFFFF" stroke="#B1A3DB"/>
+          <text x="220" y="207" font-size="10" fill="#100618" text-anchor="middle">interactors/catalog/get_buyable_skus_for_medications</text>
+          <rect x="370" y="165" width="280" height="22" rx="6" fill="#FFFFFF" stroke="#B1A3DB"/>
+          <text x="510" y="180" font-size="10" fill="#100618" text-anchor="middle">repositories/db_models/catalog_product_model.py</text>
+          <rect x="370" y="192" width="280" height="22" rx="6" fill="#FFFFFF" stroke="#B1A3DB"/>
+          <text x="510" y="207" font-size="10" fill="#100618" text-anchor="middle">channel_metadata JSONB extensibility</text>
+          <rect x="60" y="240" width="610" height="115" rx="12" fill="#DEEDE4" stroke="#59A679" stroke-width="1.5"/>
+          <text x="80" y="265" font-size="13" font-weight="600" fill="#2D6A48">orders/</text>
+          <text x="80" y="282" font-size="10" fill="#867D90">channel-agnostic order lifecycle · payment + fulfillment status transitions</text>
+          <rect x="80" y="295" width="280" height="22" rx="6" fill="#FFFFFF" stroke="#59A679"/>
+          <text x="220" y="310" font-size="10" fill="#100618" text-anchor="middle">order · order_item · order_status_event</text>
+          <rect x="80" y="322" width="280" height="22" rx="6" fill="#FFFFFF" stroke="#59A679"/>
+          <text x="220" y="337" font-size="10" fill="#100618" text-anchor="middle">preview · create · update_snapshot · get · list</text>
+          <rect x="370" y="295" width="280" height="22" rx="6" fill="#FFFFFF" stroke="#59A679"/>
+          <text x="510" y="310" font-size="10" fill="#100618" text-anchor="middle">apply_payment_paid · apply_payment_failed</text>
+          <rect x="370" y="322" width="280" height="22" rx="6" fill="#FFFFFF" stroke="#59A679"/>
+          <text x="510" y="337" font-size="10" fill="#100618" text-anchor="middle">update_fulfillment_status (state machine)</text>
+          <rect x="60" y="370" width="610" height="115" rx="12" fill="#FBF8E9" stroke="#E4CF67" stroke-width="1.5"/>
+          <text x="80" y="395" font-size="13" font-weight="600" fill="#A88E1A">pharmacy/</text>
+          <text x="80" y="412" font-size="10" fill="#867D90">pharmacy-channel-specific extensions · webhook dispatcher</text>
+          <rect x="80" y="425" width="280" height="22" rx="6" fill="#FFFFFF" stroke="#E4CF67"/>
+          <text x="220" y="440" font-size="10" fill="#100618" text-anchor="middle">entities/pharmacy/prescription_upload</text>
+          <rect x="80" y="452" width="280" height="22" rx="6" fill="#FFFFFF" stroke="#E4CF67"/>
+          <text x="220" y="467" font-size="10" fill="#100618" text-anchor="middle">entities/pharmacy/webhook_event</text>
+          <rect x="370" y="425" width="280" height="22" rx="6" fill="#FFFFFF" stroke="#E4CF67"/>
+          <text x="510" y="440" font-size="10" fill="#100618" text-anchor="middle">interactors/pharmacy/apply_webhook_event</text>
+          <rect x="370" y="452" width="280" height="22" rx="6" fill="#FFFFFF" stroke="#E4CF67"/>
+          <text x="510" y="467" font-size="10" fill="#100618" text-anchor="middle">audit row first · then state Tx</text>
+          <rect x="730" y="40" width="330" height="460" rx="20" fill="#F5F6FA" stroke="#DA4167" stroke-width="1.5" stroke-dasharray="6,4"/>
+          <text x="750" y="70" font-size="14" font-weight="600" fill="#DA4167">What stays OUT of commerce</text>
+          <text x="750" y="88" font-size="11" fill="#867D90">these never become commerce subdomains</text>
+          <g><rect x="750" y="110" width="290" height="78" rx="10" fill="#FFFFFF" stroke="#DA4167" stroke-width="1"/>
+            <text x="765" y="132" font-size="12" font-weight="600" fill="#100618">Prescriptions</text>
+            <text x="765" y="150" font-size="10" fill="#867D90">→ continuous_care</text>
+            <text x="765" y="170" font-size="10" fill="#100618">created by clinicians · commerce</text>
+            <text x="765" y="183" font-size="10" fill="#100618">snapshots them at order-create time</text></g>
+          <g><rect x="750" y="200" width="290" height="78" rx="10" fill="#FFFFFF" stroke="#DA4167" stroke-width="1"/>
+            <text x="765" y="222" font-size="12" font-weight="600" fill="#100618">Customer accounts · partners</text>
+            <text x="765" y="240" font-size="10" fill="#867D90">→ customer_lifecycle</text>
+            <text x="765" y="260" font-size="10" fill="#100618">identity / billing-to-partner,</text>
+            <text x="765" y="273" font-size="10" fill="#100618">not buy-side</text></g>
+          <g><rect x="750" y="290" width="290" height="78" rx="10" fill="#FFFFFF" stroke="#DA4167" stroke-width="1"/>
+            <text x="765" y="312" font-size="12" font-weight="600" fill="#100618">Vindi · Xis HTTP adapters</text>
+            <text x="765" y="330" font-size="10" fill="#867D90">→ lib/payment_providers/ · lib/pharmacy_providers/</text>
+            <text x="765" y="350" font-size="10" fill="#100618">lib boundary — provider-specific</text>
+            <text x="765" y="363" font-size="10" fill="#100618">HTTP, not domain logic</text></g>
+          <g><rect x="750" y="380" width="290" height="78" rx="10" fill="#FFFFFF" stroke="#DA4167" stroke-width="1"/>
+            <text x="765" y="402" font-size="12" font-weight="600" fill="#100618">select_provider routing</text>
+            <text x="765" y="420" font-size="10" fill="#867D90">→ lib/pharmacy_providers/routing.py</text>
+            <text x="765" y="440" font-size="10" fill="#100618">pure function, no DB ·</text>
+            <text x="765" y="453" font-size="10" fill="#100618">lib-level reusable</text></g>
+          <line x1="690" y1="148" x2="745" y2="148" stroke="#DA4167" stroke-width="1.5" marker-end="url(#arrow-out)" stroke-dasharray="3,3"/>
+          <line x1="690" y1="240" x2="745" y2="240" stroke="#DA4167" stroke-width="1.5" marker-end="url(#arrow-out)" stroke-dasharray="3,3"/>
+        </svg>
+        <div class="svg-caption">Three subdomains v1 · what stays out and where it lives instead</div>
+      </div>
+    </section>
+
+    <!-- ─── Extensibility ─── -->
+    <section id="extensibility">
+      <div class="section-eyebrow">Extensibility</div>
+      <h2>Add a pharmacy. Add a channel. Two different costs.</h2>
+      <p class="lede">The whole point of the channel-discriminated catalog and the provider-agnostic webhook router is that v2/v3 are additive PRs — never reshapes.</p>
+
+      <div class="grid-2" style="margin-top:var(--s-32)">
+        <article class="card card-accent">
+          <h4 style="color:var(--primary)">Adding a new pharmacy</h4>
+          <h3 style="margin-top:var(--s-8)">e.g. — Drogasil, Pague Menos, Onofre</h3>
+          <p style="font-size:14px; margin-top:var(--s-12)">One new adapter under <code>lib/pharmacy_providers/adapters/&lt;provider&gt;/</code> implementing the abstract surface. One new <code>PharmacyProvider</code> enum value.</p>
+          <ul class="clean" style="margin-top:var(--s-16)">
+            <li><code>lib/pharmacy_providers/adapters/&lt;provider&gt;/adapter.py</code> — implements abstract methods</li>
+            <li><code>lib/pharmacy_providers/adapters/&lt;provider&gt;/webhook_parser.py</code> — verify + normalize</li>
+            <li>Add to <code>PharmacyProvider</code> enum</li>
+            <li>Add factory branch in <code>lib/pharmacy_providers/factory.py</code></li>
+            <li><strong>Optional</strong>: extend <code>routing.select_provider</code> if partner-restricted</li>
+          </ul>
+          <div class="callout success" style="margin-top:var(--s-20); margin-bottom:0">
+            <div class="callout-label">What stays unchanged</div>
+            The webhook router. The domain. The DB schema. All endpoints. <code>POST /commerce/v1/webhooks/pharmacies/&lt;new&gt;</code> works automatically.
+          </div>
+        </article>
+
+        <article class="card card-success">
+          <h4 style="color:var(--success)">Adding a new channel</h4>
+          <h3 style="margin-top:var(--s-8)">e.g. — LAB_TEST, DEVICES, SUPPLEMENTS</h3>
+          <p style="font-size:14px; margin-top:var(--s-12)">One new row-class in <code>products</code>. One new seed script. One new sync routine. One new entry in <code>quote_cart</code>'s dispatch table. New subdomain alongside <code>pharmacy/</code>.</p>
+          <ul class="clean" style="margin-top:var(--s-16)">
+            <li>Add value to <code>OrderChannel</code> enum (= <code>products.channel</code>)</li>
+            <li><code>lib/&lt;channel&gt;_providers/</code> — own adapter abstraction</li>
+            <li><code>domains/commerce/&lt;channel&gt;/</code> — channel-specific subdomain</li>
+            <li><code>private/scripts/commerce/seed_catalog_&lt;channel&gt;.py</code></li>
+            <li><code>sync_&lt;channel&gt;_catalog_routine.py</code></li>
+            <li>One entry in <code>quote_cart</code>'s dispatch table</li>
+          </ul>
+          <div class="callout success" style="margin-top:var(--s-20); margin-bottom:0">
+            <div class="callout-label">What stays unchanged</div>
+            The internal data model + dispatch tables. v2 adds new public endpoints (e.g., <code>/commerce/v1/products</code>, <code>/commerce/v1/cart/quote</code>) — additively, never reshapes. <code>/commerce/v1/orders</code> already accepts items from any channel. The <code>channel</code> discriminator already exists.
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <footer class="page-footer">
+      <div class="footer-grid">
+        <div>
+          <h4>Source documents</h4>
+          <ul>
+            <li><a href="../2026-05-07-commerce-domain.md">2026-05-07-commerce-domain.md</a> · spec</li>
+            <li><a href="../2026-05-07-commerce-domain-implementation-plan.md">2026-05-07-commerce-domain-implementation-plan.md</a> · plan</li>
+            <li><a href="https://linear.app/liti/issue/ENG-8165/novo-dominio-commerce">Linear · ENG-8165</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>About this document</h4>
+          <p style="color:var(--text-light); font-size:14px; line-height:1.6">A multi-page mini-site companion. Auto-regeneratable via <code style="background:transparent; color:var(--primary-light)">/visualize-plan</code>.</p>
+          <p style="color:var(--text-light); font-size:13px; margin-top:var(--s-12); font-family:var(--ff-mono)">Visual identity · Liti mobile design system<br>Outfit · #735ABF · #59A679</p>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>

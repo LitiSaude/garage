@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commerce Domain — API reference</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--primary:#735ABF;--primary-dark:#453281;--primary-light:#B1A3DB;--primary-tint:#ECE7F7;--success:#59A679;--success-light:#DEEDE4;--error:#DA4167;--error-light:#F7D4DD;--warning:#E4CF67;--warning-light:#FBF8E9;--bg:#F5F6FA;--surface:#FFFFFF;--surface-alt:#FAFAFC;--text-dark:#100618;--text-strong:#867D90;--text-light:#BDB7C5;--text-on-brand:#FFFFFF;--stroke:#E6E3E8;--stroke-soft:#BDB7C5;--s-2:2px;--s-4:4px;--s-6:6px;--s-8:8px;--s-10:10px;--s-12:12px;--s-16:16px;--s-20:20px;--s-24:24px;--s-32:32px;--s-40:40px;--s-48:48px;--s-64:64px;--r-4:4px;--r-8:8px;--r-12:12px;--r-16:16px;--r-24:24px;--r-32:32px;--r-full:999px;--ff-sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--ff-mono:'JetBrains Mono','SF Mono',Consolas,monospace;--side-menu-w:280px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--ff-sans);background:var(--bg);color:var(--text-dark);line-height:1.5;font-size:16px;letter-spacing:-0.005em}
+  .shell{display:flex;min-height:100vh}
+  .side-menu{width:var(--side-menu-w);flex-shrink:0;background:var(--surface);border-right:1px solid var(--stroke);position:sticky;top:0;align-self:flex-start;height:100vh;overflow-y:auto;padding:var(--s-24) var(--s-20)}
+  .page-main{flex:1;min-width:0;padding:var(--s-48) var(--s-32);max-width:960px}
+  .side-menu-top{padding-bottom:var(--s-16);border-bottom:1px solid var(--stroke);margin-bottom:var(--s-16)}
+  .breadcrumb{display:inline-block;font-family:var(--ff-mono);font-size:12px;color:var(--primary);text-decoration:none;border:none;margin-bottom:var(--s-12);font-weight:500}
+  .breadcrumb:hover{color:var(--primary-dark)}
+  .spec-meta{display:flex;flex-direction:column;gap:var(--s-2)}
+  .spec-meta .eyebrow{font-family:var(--ff-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-dark)}
+  .spec-meta .last-updated{font-family:var(--ff-mono);font-size:11px;color:var(--text-strong)}
+  .side-menu nav{margin-bottom:var(--s-20)}
+  .side-menu nav h4{font-family:var(--ff-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-strong);margin-bottom:var(--s-8);padding:0 var(--s-8)}
+  .side-menu nav ul{list-style:none;padding:0}
+  .side-menu nav li{margin-bottom:var(--s-2)}
+  .side-menu nav a{display:block;padding:var(--s-6) var(--s-8);font-size:14px;color:var(--text-strong);text-decoration:none;border-radius:var(--r-8);transition:background .15s,color .15s;border-left:2px solid transparent}
+  .side-menu nav a:hover{background:var(--bg);color:var(--text-dark)}
+  .side-menu nav a.current{background:var(--primary-tint);color:var(--primary-dark);font-weight:600;border-left-color:var(--primary)}
+  .side-menu-anchors a{font-family:var(--ff-mono);font-size:12px;padding:var(--s-6) var(--s-8) var(--s-6) var(--s-12)}
+  .page-header{margin-bottom:var(--s-40)}
+  .page-eyebrow{font-family:var(--ff-mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary);margin-bottom:var(--s-12)}
+  h1{font-size:40px;font-weight:600;letter-spacing:-0.025em;line-height:1.1;margin-bottom:var(--s-12)}
+  h2{font-size:28px;font-weight:600;letter-spacing:-0.02em;line-height:1.2;margin-bottom:var(--s-12)}
+  h3{font-size:18px;font-weight:600;letter-spacing:-0.01em;margin-bottom:var(--s-8)}
+  h5{font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-strong);margin-bottom:var(--s-6)}
+  p{font-size:16px;color:var(--text-dark);margin-bottom:var(--s-12)}
+  p.lede{font-size:18px;color:var(--text-strong);max-width:780px;margin-bottom:var(--s-16)}
+  code{font-family:var(--ff-mono);font-size:0.9em;background:var(--bg);padding:1px 5px;border-radius:var(--r-4)}
+  a{color:var(--primary);text-decoration:none;border-bottom:1px solid var(--primary-light);transition:opacity .15s}
+  a:hover{opacity:0.7}
+  section{padding:var(--s-32) 0;border-top:1px solid var(--stroke);scroll-margin-top:var(--s-24)}
+  section:first-of-type{border-top:none;padding-top:0}
+  .section-eyebrow{font-family:var(--ff-mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary);margin-bottom:var(--s-12)}
+  .kpi{background:var(--surface);border:1px solid var(--stroke);border-radius:var(--r-12);padding:var(--s-20)}
+  .kpi-num{font-family:var(--ff-mono);font-size:36px;font-weight:600;color:var(--primary);line-height:1;letter-spacing:-0.02em;margin-bottom:var(--s-8)}
+  .kpi-label{font-size:13px;color:var(--text-strong);line-height:1.35}
+  .api-summary{display:grid;grid-template-columns:repeat(4, 1fr);gap:var(--s-12);margin:var(--s-24) 0 var(--s-32)}
+  .api-summary .kpi-num{font-size:24px}
+  .api-summary .kpi-label{font-size:12px}
+  .api-toc{background:var(--surface);border:1px solid var(--stroke);border-radius:var(--r-12);padding:var(--s-16) var(--s-20);margin-bottom:var(--s-32)}
+  .api-toc-group{margin-bottom:var(--s-12)}
+  .api-toc-group:last-child{margin-bottom:0}
+  .api-toc-group h4{font-family:var(--ff-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-strong);margin-bottom:var(--s-8)}
+  .api-toc-list{display:flex;flex-wrap:wrap;gap:var(--s-6)}
+  .api-toc-list a{display:inline-flex;align-items:center;gap:var(--s-6);border:1px solid var(--stroke);border-radius:var(--r-8);padding:var(--s-4) var(--s-10);font-family:var(--ff-mono);font-size:12px;color:var(--text-dark);transition:border-color .15s,background .15s;border-bottom-color:var(--stroke)}
+  .api-toc-list a:hover{border-color:var(--primary);background:var(--primary-tint);opacity:1}
+  .api-endpoint{background:var(--surface);border:1px solid var(--stroke);border-radius:var(--r-12);padding:var(--s-20) var(--s-24);margin-bottom:var(--s-16);scroll-margin-top:var(--s-32)}
+  .api-endpoint-head{display:flex;align-items:center;gap:var(--s-12);flex-wrap:wrap;margin-bottom:var(--s-8)}
+  .api-method{display:inline-block;padding:var(--s-4) var(--s-10);border-radius:var(--r-8);font-family:var(--ff-mono);font-size:11px;font-weight:600;letter-spacing:0.05em;border:1px solid}
+  .api-method.get{background:var(--success-light);color:#2D6A48;border-color:var(--success)}
+  .api-method.post{background:var(--primary-tint);color:var(--primary-dark);border-color:var(--primary)}
+  .api-method.put{background:var(--warning-light);color:#A88E1A;border-color:var(--warning)}
+  .api-method.patch{background:#F5F0FF;color:var(--primary);border-color:var(--primary-light)}
+  .api-method.delete{background:var(--error-light);color:#8E1B36;border-color:var(--error)}
+  .api-path{font-family:var(--ff-mono);font-size:15px;font-weight:600;color:var(--text-dark)}
+  .api-path b{color:var(--primary);font-weight:500}
+  .api-tag{margin-left:auto;font-family:var(--ff-mono);font-size:10px;color:var(--text-strong);text-transform:uppercase;letter-spacing:0.08em}
+  .api-desc{font-size:14px;color:var(--text-strong);margin:var(--s-4) 0 var(--s-12)}
+  .api-meta{display:flex;gap:var(--s-16);flex-wrap:wrap;background:var(--surface-alt);border-radius:var(--r-8);padding:var(--s-10) var(--s-12);margin-bottom:var(--s-16);font-family:var(--ff-mono);font-size:12px}
+  .api-meta b{color:var(--text-strong);font-weight:500;margin-right:var(--s-6)}
+  .api-block{margin-bottom:var(--s-16)}
+  pre.code{background:#100618;color:#F5F6FA;border-radius:var(--r-8);padding:var(--s-12) var(--s-16);overflow-x:auto;font-family:var(--ff-mono);font-size:12px;line-height:1.55;white-space:pre}
+  pre.code .k{color:#B1A3DB}
+  pre.code .s{color:#DEEDE4}
+  pre.code .n{color:#E4CF67}
+  pre.code .c{color:#867D90;font-style:italic}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  td{padding:var(--s-10) var(--s-12);border-bottom:1px solid var(--stroke);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  .pill{display:inline-block;padding:2px 8px;border-radius:var(--r-full);font-family:var(--ff-mono);font-size:11px;font-weight:500}
+  .pill-success{background:var(--success-light);color:#2D6A48}
+  .pill-error{background:var(--error-light);color:#8E1B36}
+  .pill-warning{background:var(--warning-light);color:#A88E1A}
+  .api-status-table{margin-top:var(--s-6);font-size:13px}
+  .api-status-table td:first-child{width:90px;font-family:var(--ff-mono);font-weight:600}
+  .api-status-table td:nth-child(2){width:160px;color:var(--text-strong)}
+  footer.page-footer{background:var(--text-dark);color:var(--text-light);padding:var(--s-40) var(--s-32);margin:var(--s-48) calc(-1 * var(--s-32)) calc(-1 * var(--s-48));font-size:14px}
+  footer.page-footer .footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-32)}
+  footer.page-footer h4{color:var(--text-on-brand);margin-bottom:var(--s-12)}
+  footer.page-footer a{color:var(--primary-light);border-color:var(--primary-light)}
+  footer.page-footer ul{list-style:none;padding:0}
+  footer.page-footer li{margin-bottom:var(--s-8);font-family:var(--ff-mono);font-size:13px}
+  @media (max-width:900px){.shell{flex-direction:column}.side-menu{position:static;width:100%;height:auto;border-right:none;border-bottom:1px solid var(--stroke)}.page-main{padding:var(--s-24) var(--s-20);max-width:100%}.api-summary{grid-template-columns:1fr}h1{font-size:32px}h2{font-size:22px}footer.page-footer .footer-grid{grid-template-columns:1fr}footer.page-footer{margin:var(--s-32) calc(-1 * var(--s-20)) calc(-1 * var(--s-24));padding:var(--s-32) var(--s-20)}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <aside class="side-menu">
+    <div class="side-menu-top">
+      <a class="breadcrumb" href="index.html">← Commerce Domain</a>
+      <div class="spec-meta">
+        <span class="eyebrow">ENG-8165 · v0.2</span>
+        <span class="last-updated">Updated 2026-05-09</span>
+      </div>
+    </div>
+    <nav class="side-menu-pages">
+      <h4>Pages</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="architecture.html">Architecture</a></li>
+        <li><a href="flows.html">Flows</a></li>
+        <li><a href="data-model.html">Data model</a></li>
+        <li><a href="api.html" class="current">API reference</a></li>
+        <li><a href="deployment.html">Deployment</a></li>
+        <li><a href="roadmap.html">Roadmap</a></li>
+      </ul>
+    </nav>
+    <nav class="side-menu-anchors">
+      <h4>On this page</h4>
+      <ul>
+        <li><a href="#api-summary">Summary</a></li>
+        <li><a href="#bff">BFF · quick-buy</a></li>
+        <li><a href="#orders">Orders</a></li>
+        <li><a href="#webhooks">Webhooks</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="page-main">
+
+    <header class="page-header">
+      <div class="page-eyebrow">Chapter 04 · API reference</div>
+      <h1>API reference</h1>
+      <p class="lede">Seven endpoints across BFF · orders · webhooks. All <code>/commerce/v1/*</code>, fronted by the AWS API Gateway at <code>api.litisaude.com.br</code>. The BFF lives in <code>pygeia</code> main; orders + webhooks live in <code>liti-commerce</code> — clients don't see the split. Customer auth via Clerk except for the two webhook routes (provider-specific signature verification).</p>
+    </header>
+
+    <!-- ─── Summary ─── -->
+    <section id="api-summary">
+      <div class="api-summary">
+        <div class="kpi"><div class="kpi-num">7</div><div class="kpi-label">total endpoints · BFF + 4 orders · 2 webhooks</div></div>
+        <div class="kpi"><div class="kpi-num">3</div><div class="kpi-label">resource groups · BFF · orders · webhooks</div></div>
+        <div class="kpi"><div class="kpi-num">JSON</div><div class="kpi-label">Content-Type: application/json · forbid extras</div></div>
+        <div class="kpi"><div class="kpi-num">v1</div><div class="kpi-label">URL prefix · /commerce/v1/ · gateway-fronted</div></div>
+      </div>
+
+      <div class="api-toc">
+        <div class="api-toc-group">
+          <h4>BFF · prescribed-meds quick-buy</h4>
+          <div class="api-toc-list">
+            <a href="#api-bff-prescribed-purchases"><span class="api-method get">GET</span> /commerce/v1/home/prescribed_purchases</a>
+          </div>
+        </div>
+        <div class="api-toc-group">
+          <h4>Orders</h4>
+          <div class="api-toc-list">
+            <a href="#api-preview-order"><span class="api-method post">POST</span> /commerce/v1/orders/preview</a>
+            <a href="#api-create-order"><span class="api-method post">POST</span> /commerce/v1/orders</a>
+            <a href="#api-list-orders"><span class="api-method get">GET</span> /commerce/v1/orders</a>
+            <a href="#api-get-order"><span class="api-method get">GET</span> /commerce/v1/orders/{id}</a>
+          </div>
+        </div>
+        <div class="api-toc-group">
+          <h4>Webhooks</h4>
+          <div class="api-toc-list">
+            <a href="#api-payment-webhook"><span class="api-method post">POST</span> /commerce/v1/webhooks/payments/{provider}</a>
+            <a href="#api-pharmacy-webhook"><span class="api-method post">POST</span> /commerce/v1/webhooks/pharmacies/{provider}</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Catalog ─── -->
+    <section id="bff">
+      <div class="section-eyebrow">BFF · prescribed-meds quick-buy</div>
+      <h2>One endpoint, one screen.</h2>
+      <p class="lede">Powers the Comprar card on Home and the prescription-detail screen. Lives in <code>pygeia</code> main (not <code>liti-commerce</code>) — composes prescription + buyable SKU + last-known price + default delivery address + default payment profile into one screen-shaped response. The <code>missing[]</code> contract drives mobile's CTA: <code>[]</code> → Comprar; <code>["payment_profile"]</code> → "Adicionar cartão"; <code>["prescription_expired"]</code> → "Renovar prescrição".</p>
+
+      <article id="api-bff-prescribed-purchases" class="api-endpoint" style="margin-top:var(--s-24)">
+        <div class="api-endpoint-head"><span class="api-method get">GET</span><span class="api-path">/commerce/v1/home/prescribed_purchases</span><span class="api-tag">PR 5.5</span></div>
+        <p class="api-desc">Composes per-prescription buy-readiness for the mobile Home / prescription-detail screen. Hosted by <code>pygeia</code> main; calls <code>liti-commerce.internal/_internal/medications_to_skus</code> via Fly internal DNS for the SKU resolution. Cached <code>last_known_total_cents</code>; live re-quote happens at <code>POST /commerce/v1/orders/preview</code> on confirm.</p>
+        <div class="api-meta">
+          <span><b>Auth</b>Clerk · validate_user_is_customer</span>
+          <span><b>Middleware</b>customer_user_middleware</span>
+          <span><b>Host</b>pygeia main</span>
+        </div>
+        <div class="api-block">
+          <h5>Query parameters</h5>
+          <table class="api-status-table">
+            <tr><td>category</td><td>enum?</td><td>filter; defaults to <code>GLP_1</code></td></tr>
+          </table>
+        </div>
+        <div class="api-block">
+          <h5>Response · 200</h5>
+<pre class="code"><span class="k">{</span>
+  <span class="s">"items"</span>: [
+    <span class="k">{</span>
+      <span class="s">"prescription_id"</span>: <span class="s">"a3f1c2e4-..."</span>,
+      <span class="s">"category"</span>: <span class="s">"GLP_1"</span>,
+      <span class="s">"medication_display_name"</span>: <span class="s">"Ozempic 1mg"</span>,
+      <span class="s">"prescription_summary"</span>: <span class="s">"1 caneta · semanal"</span>,
+      <span class="s">"next_application_at"</span>: <span class="s">"2026-05-12"</span>,
+      <span class="s">"purchase"</span>: <span class="k">{</span>
+        <span class="s">"sku"</span>: <span class="s">"sku-ozempic-1mg"</span>,
+        <span class="s">"last_known_total_cents"</span>: <span class="n">89000</span>,
+        <span class="s">"price_cached_at"</span>: <span class="s">"2026-05-09T10:00:00Z"</span>,
+        <span class="s">"currency"</span>: <span class="s">"BRL"</span>,
+        <span class="s">"default_sla_tier"</span>: <span class="s">"STANDARD"</span>,
+        <span class="s">"default_delivery_address_id"</span>: <span class="s">"addr_..."</span>,
+        <span class="s">"default_payment_profile_id"</span>: <span class="s">"pp_..."</span>,
+        <span class="s">"can_purchase_in_one_click"</span>: <span class="n">true</span>,
+        <span class="s">"missing"</span>: []
+      <span class="k">}</span>
+    <span class="k">}</span>
+  ],
+  <span class="s">"meta"</span>: <span class="k">{</span> <span class="s">"total"</span>: <span class="n">1</span> <span class="k">}</span>
+<span class="k">}</span></pre>
+          <p style="font-size:12px; color:var(--text-strong); margin-top:var(--s-6)"><strong>Never present:</strong> <code>pharmacy_provider</code>, <code>branch_id</code>, or any channel-internal routing detail. <code>missing[]</code> values: <code>payment_profile</code>, <code>delivery_address</code>, <code>prescription_expired</code>, <code>out_of_stock</code>.</p>
+        </div>
+        <div class="api-block">
+          <h5>Status codes</h5>
+          <table class="api-status-table">
+            <tr><td><span class="pill pill-success">200</span></td><td>OK</td><td>list returned (may be empty if no active prescriptions in category)</td></tr>
+            <tr><td><span class="pill pill-warning">401</span></td><td>Unauthorized</td><td>missing/invalid Clerk token</td></tr>
+            <tr><td><span class="pill pill-warning">422</span></td><td>Unprocessable</td><td>invalid category enum</td></tr>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <!-- ─── Orders ─── -->
+    <section id="orders">
+      <div class="section-eyebrow">Orders</div>
+      <h2>Preview, create, list, detail.</h2>
+      <p class="lede">Single-domain routers. Cross-domain hydration via <code>order_request_context_middleware</code>; routers only see pre-hydrated objects on <code>request.state</code>.</p>
+
+      <article id="api-preview-order" class="api-endpoint" style="margin-top:var(--s-24)">
+        <div class="api-endpoint-head"><span class="api-method post">POST</span><span class="api-path">/commerce/v1/orders/preview</span><span class="api-tag">PR 6</span></div>
+        <p class="api-desc">Read-only preview — final pricing + delivery feasibility from the hydrated snapshot. Validates prescription ownership against the authenticated customer (403 on mismatch). No DB writes.</p>
+        <div class="api-meta">
+          <span><b>Auth</b>Clerk · customer</span>
+          <span><b>Middleware</b>order_request_context_middleware</span>
+          <span><b>P95</b>1500ms</span>
+        </div>
+        <div class="api-block">
+          <h5>Request body</h5>
+<pre class="code"><span class="k">{</span>
+  <span class="s">"items"</span>: [<span class="k">{</span> <span class="s">"sku"</span>: <span class="s">"sku-amox-500"</span>, <span class="s">"quantity"</span>: <span class="n">1</span> <span class="k">}</span>],
+  <span class="s">"prescription_id"</span>: <span class="s">"a3f1c2e4-..."</span>,
+  <span class="s">"delivery_address"</span>: <span class="k">{</span>
+    <span class="s">"street"</span>: <span class="s">"Av. Paulista"</span>, <span class="s">"number"</span>: <span class="s">"1578"</span>,
+    <span class="s">"city"</span>: <span class="s">"São Paulo"</span>, <span class="s">"state"</span>: <span class="s">"SP"</span>,
+    <span class="s">"postal_code"</span>: <span class="s">"01310-100"</span>, <span class="s">"country"</span>: <span class="s">"BR"</span>
+  <span class="k">}</span>,
+  <span class="s">"sla_tier"</span>: <span class="s">"SAME_DAY"</span>
+<span class="k">}</span></pre>
+        </div>
+        <div class="api-block">
+          <h5>Response · 200</h5>
+<pre class="code"><span class="k">{</span>
+  <span class="s">"items"</span>: [<span class="k">{</span> <span class="s">"sku"</span>: <span class="s">"sku-amox-500"</span>, <span class="s">"unit_price_cents"</span>: <span class="n">1290</span> <span class="k">}</span>],
+  <span class="s">"delivery_price_cents"</span>: <span class="n">1500</span>,
+  <span class="s">"total_cents"</span>: <span class="n">2790</span>,
+  <span class="s">"currency"</span>: <span class="s">"BRL"</span>,
+  <span class="s">"sla_tier"</span>: <span class="s">"SAME_DAY"</span>,
+  <span class="s">"prescription_validated"</span>: <span class="n">true</span>
+<span class="k">}</span></pre>
+        </div>
+        <div class="api-block">
+          <h5>Status codes</h5>
+          <table class="api-status-table">
+            <tr><td><span class="pill pill-success">200</span></td><td>OK</td><td>preview returned</td></tr>
+            <tr><td><span class="pill pill-warning">403</span></td><td>Forbidden</td><td>prescription doesn't belong to authenticated customer</td></tr>
+            <tr><td><span class="pill pill-warning">404</span></td><td>Not Served</td><td>postal_code outside coverage</td></tr>
+            <tr><td><span class="pill pill-warning">422</span></td><td>Unprocessable</td><td>PAN-shaped string in body · CVV-shaped string · unknown sku · sla_tier not in quote</td></tr>
+          </table>
+        </div>
+      </article>
+
+      <article id="api-create-order" class="api-endpoint">
+        <div class="api-endpoint-head"><span class="api-method post">POST</span><span class="api-path">/commerce/v1/orders</span><span class="api-tag">PR 6</span></div>
+        <p class="api-desc">Creates the draft order in <code>PENDING + PLACING</code> and kicks off <code>place_pharmacy_order_workflow</code> in the background. Returns immediately with the order id; the client polls <code>GET /commerce/v1/orders/{id}</code> for status.</p>
+        <div class="api-meta">
+          <span><b>Auth</b>Clerk · customer</span>
+          <span><b>Middleware</b>order_request_context_middleware</span>
+          <span><b>Async</b>202 + workflow</span>
+        </div>
+        <div class="api-block">
+          <h5>Request body</h5>
+<pre class="code"><span class="k">{</span>
+  <span class="s">"items"</span>: [<span class="k">{</span> <span class="s">"sku"</span>: <span class="s">"sku-amox-500"</span>, <span class="s">"quantity"</span>: <span class="n">1</span> <span class="k">}</span>],
+  <span class="s">"prescription_id"</span>: <span class="s">"a3f1c2e4-..."</span>,
+  <span class="s">"delivery_address"</span>: <span class="k">{</span> ... <span class="k">}</span>,
+  <span class="s">"sla_tier"</span>: <span class="s">"SAME_DAY"</span>,
+  <span class="c">// exactly one of:</span>
+  <span class="s">"payment_profile_id"</span>: <span class="s">"pp_..."</span>,
+  <span class="s">"gateway_token"</span>: <span class="s">"vindi_token_..."</span>
+<span class="k">}</span></pre>
+        </div>
+        <div class="api-block">
+          <h5>Response · 202 Accepted</h5>
+<pre class="code"><span class="k">{</span>
+  <span class="s">"order_id"</span>: <span class="s">"7c8e1d4a-..."</span>,
+  <span class="s">"payment_status"</span>: <span class="s">"PENDING"</span>,
+  <span class="s">"fulfillment_status"</span>: <span class="s">"PLACING"</span>,
+  <span class="s">"pharmacy_name"</span>: <span class="s">"Xis Farmácia"</span>,
+  <span class="s">"total_cents"</span>: <span class="n">2790</span>,
+  <span class="s">"currency"</span>: <span class="s">"BRL"</span>
+<span class="k">}</span></pre>
+          <p style="font-size:12px; color:var(--text-strong); margin-top:var(--s-6)"><strong>Never present:</strong> <code>pharmacy_provider</code> enum value. Customer-friendly <code>pharmacy_name</code> only.</p>
+        </div>
+        <div class="api-block">
+          <h5>Status codes</h5>
+          <table class="api-status-table">
+            <tr><td><span class="pill pill-success">202</span></td><td>Accepted</td><td>order created, workflow started</td></tr>
+            <tr><td><span class="pill pill-warning">403</span></td><td>Forbidden</td><td>prescription doesn't belong to caller</td></tr>
+            <tr><td><span class="pill pill-warning">409</span></td><td>Conflict</td><td>idempotency replay landed on existing order</td></tr>
+            <tr><td><span class="pill pill-warning">422</span></td><td>Unprocessable</td><td>both payment_profile_id AND gateway_token (mutually exclusive) · PAN/CVV-shaped field</td></tr>
+          </table>
+        </div>
+      </article>
+
+      <article id="api-list-orders" class="api-endpoint">
+        <div class="api-endpoint-head"><span class="api-method get">GET</span><span class="api-path">/commerce/v1/orders</span><span class="api-tag">PR 8</span></div>
+        <p class="api-desc">Caller's order history. Sorted by <code>inserted_at desc</code>. Customer A can never see customer B's orders (404 indistinguishable from 403).</p>
+        <div class="api-meta">
+          <span><b>Auth</b>Clerk · customer</span>
+          <span><b>Scope</b>partner_scope=data_owner</span>
+          <span><b>Sort</b>inserted_at desc</span>
+        </div>
+        <div class="api-block">
+          <h5>Response · 200</h5>
+<pre class="code"><span class="k">{</span>
+  <span class="s">"items"</span>: [
+    <span class="k">{</span>
+      <span class="s">"order_id"</span>: <span class="s">"7c8e1d4a-..."</span>,
+      <span class="s">"fulfillment_status"</span>: <span class="s">"OUT_FOR_DELIVERY"</span>,
+      <span class="s">"payment_status"</span>: <span class="s">"PAID"</span>,
+      <span class="s">"total_cents"</span>: <span class="n">2790</span>,
+      <span class="s">"placed_at"</span>: <span class="s">"2026-05-08T14:22:11Z"</span>,
+      <span class="s">"item_count"</span>: <span class="n">1</span>,
+      <span class="s">"pharmacy_name"</span>: <span class="s">"Xis Farmácia"</span>
+    <span class="k">}</span>
+  ],
+  <span class="s">"meta"</span>: <span class="k">{</span> <span class="s">"limit"</span>: <span class="n">20</span>, <span class="s">"offset"</span>: <span class="n">0</span>, <span class="s">"total"</span>: <span class="n">3</span>, <span class="s">"has_more"</span>: <span class="n">false</span> <span class="k">}</span>
+<span class="k">}</span></pre>
+        </div>
+        <div class="api-block">
+          <h5>Status codes</h5>
+          <table class="api-status-table">
+            <tr><td><span class="pill pill-success">200</span></td><td>OK</td><td>list returned (may be empty)</td></tr>
+            <tr><td><span class="pill pill-warning">401</span></td><td>Unauthorized</td><td>missing Clerk token</td></tr>
+          </table>
+        </div>
+      </article>
+
+      <article id="api-get-order" class="api-endpoint">
+        <div class="api-endpoint-head"><span class="api-method get">GET</span><span class="api-path">/commerce/v1/orders/<b>{id}</b></span><span class="api-tag">PR 8</span></div>
+        <p class="api-desc">Single order detail with full snapshot fields. Mobile polls this for status updates after a 202 from create.</p>
+        <div class="api-meta">
+          <span><b>Auth</b>Clerk · customer</span>
+          <span><b>Scope</b>data_owner</span>
+          <span><b>404 ≡ 403</b>same body for "not yours" and "not found"</span>
+        </div>
+        <div class="api-block">
+          <h5>Response · 200</h5>
+<pre class="code"><span class="k">{</span>
+  <span class="s">"order_id"</span>: <span class="s">"7c8e1d4a-..."</span>,
+  <span class="s">"fulfillment_status"</span>: <span class="s">"OUT_FOR_DELIVERY"</span>,
+  <span class="s">"payment_status"</span>: <span class="s">"PAID"</span>,
+  <span class="s">"items"</span>: [<span class="k">{</span> <span class="s">"sku"</span>: <span class="s">"sku-amox-500"</span>, <span class="s">"quantity"</span>: <span class="n">1</span>, <span class="s">"unit_price_cents"</span>: <span class="n">1290</span> <span class="k">}</span>],
+  <span class="s">"total_cents"</span>: <span class="n">2790</span>, <span class="s">"currency"</span>: <span class="s">"BRL"</span>,
+  <span class="s">"delivery_address"</span>: <span class="k">{</span> ... <span class="k">}</span>,
+  <span class="s">"pharmacy_name"</span>: <span class="s">"Xis Farmácia"</span>,
+  <span class="s">"tracking_code"</span>: <span class="s">"BR1234567890"</span>,
+  <span class="s">"placed_at"</span>: <span class="s">"2026-05-08T14:22:11Z"</span>,
+  <span class="s">"latest_event"</span>: <span class="k">{</span>
+    <span class="s">"to_fulfillment_status"</span>: <span class="s">"OUT_FOR_DELIVERY"</span>,
+    <span class="s">"occurred_at"</span>: <span class="s">"2026-05-09T08:14:02Z"</span>
+  <span class="k">}</span>
+<span class="k">}</span></pre>
+        </div>
+        <div class="api-block">
+          <h5>Status codes</h5>
+          <table class="api-status-table">
+            <tr><td><span class="pill pill-success">200</span></td><td>OK</td><td>order returned</td></tr>
+            <tr><td><span class="pill pill-warning">404</span></td><td>Not Found</td><td>order does not exist OR belongs to another customer (indistinguishable)</td></tr>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <!-- ─── Webhooks ─── -->
+    <section id="webhooks">
+      <div class="section-eyebrow">Webhooks</div>
+      <h2>Provider-agnostic sinks.</h2>
+      <p class="lede">New providers add only an adapter — router unchanged. Adding Drogasil, Pague Menos, etc. needs no code in this file.</p>
+
+      <article id="api-payment-webhook" class="api-endpoint" style="margin-top:var(--s-24)">
+        <div class="api-endpoint-head"><span class="api-method post">POST</span><span class="api-path">/commerce/v1/webhooks/payments/<b>{provider}</b></span><span class="api-tag">webhook · PR 7</span></div>
+        <p class="api-desc">Provider-agnostic payment-event sink. v1: only <code>vindi</code> is a valid provider value (unknown enum → 404). On <code>bill.paid</code>, applies payment + starts <code>fulfill_pharmacy_order_workflow</code>. Always returns 204 unless auth fails.</p>
+        <div class="api-meta">
+          <span><b>Auth</b>HTTP Basic (Vindi)</span>
+          <span><b>Idempotency</b>provider_event_id · event.id</span>
+          <span><b>Cross-check</b>bill.code AND bill.metadata.order_id</span>
+        </div>
+        <div class="api-block">
+          <h5>Inbound payload (Vindi)</h5>
+<pre class="code"><span class="k">{</span>
+  <span class="s">"event"</span>: <span class="k">{</span>
+    <span class="s">"id"</span>: <span class="s">"evt_..."</span>,
+    <span class="s">"type"</span>: <span class="s">"bill_paid"</span>,
+    <span class="s">"data"</span>: <span class="k">{</span>
+      <span class="s">"bill"</span>: <span class="k">{</span>
+        <span class="s">"id"</span>: <span class="n">123456</span>,
+        <span class="s">"code"</span>: <span class="s">"order-7c8e1d4a-..."</span>,
+        <span class="s">"status"</span>: <span class="s">"paid"</span>,
+        <span class="s">"metadata"</span>: <span class="k">{</span> <span class="s">"order_id"</span>: <span class="s">"7c8e1d4a-..."</span> <span class="k">}</span>
+      <span class="k">}</span>
+    <span class="k">}</span>
+  <span class="k">}</span>
+<span class="k">}</span></pre>
+        </div>
+        <div class="api-block">
+          <h5>Status codes</h5>
+          <table class="api-status-table">
+            <tr><td><span class="pill pill-success">204</span></td><td>No Content</td><td>processed (or replay/unknown bill — both 204)</td></tr>
+            <tr><td><span class="pill pill-warning">401</span></td><td>Unauthorized</td><td>invalid Basic Auth · OR cross-check failure (bill.code ≠ order-{id} OR metadata mismatch) · notice_error</td></tr>
+            <tr><td><span class="pill pill-warning">404</span></td><td>Not Found</td><td>unknown provider in path</td></tr>
+          </table>
+        </div>
+      </article>
+
+      <article id="api-pharmacy-webhook" class="api-endpoint">
+        <div class="api-endpoint-head"><span class="api-method post">POST</span><span class="api-path">/commerce/v1/webhooks/pharmacies/<b>{provider}</b></span><span class="api-tag">webhook · PR 7</span></div>
+        <p class="api-desc">Provider-agnostic pharmacy fulfillment sink. v1: only <code>xis_farmacia</code>. Type 1 events drive the fulfillment state machine; non-Type-1 → 204 + audit row with <code>event_kind="unknown"</code>. Adding a new pharmacy is a new adapter only — router unchanged.</p>
+        <div class="api-meta">
+          <span><b>Auth</b>shared-secret · header OR payload field</span>
+          <span><b>Compare</b>hmac.compare_digest</span>
+          <span><b>Idempotency</b>sha256("{seller_order_id}|{type}|{status}")</span>
+        </div>
+        <div class="api-block">
+          <h5>Inbound payload (Xis Type 1)</h5>
+<pre class="code"><span class="k">{</span>
+  <span class="s">"type"</span>: <span class="n">1</span>,
+  <span class="s">"order_id"</span>: <span class="n">1234</span>,
+  <span class="s">"seller_order_id"</span>: <span class="s">"7c8e1d4a-..."</span>,
+  <span class="s">"status"</span>: <span class="s">"out_for_delivery"</span>,
+  <span class="s">"x_auth_token"</span>: <span class="s">"&lt;shared-secret&gt;"</span>
+<span class="k">}</span></pre>
+        </div>
+        <div class="api-block">
+          <h5>Behaviour by outcome</h5>
+          <table class="api-status-table">
+            <tr><td><span class="pill pill-success">204</span></td><td>Type 1 OK</td><td>audit-Tx commit · state-Tx via update_fulfillment_status · 204</td></tr>
+            <tr><td><span class="pill pill-success">204</span></td><td>Type ≠ 1</td><td>audit row event_kind="unknown" · no domain action</td></tr>
+            <tr><td><span class="pill pill-success">204</span></td><td>Replay</td><td>provider_event_id seen → no-op</td></tr>
+            <tr><td><span class="pill pill-success">204</span></td><td>Unknown order</td><td>audit row order_id=NULL · 204</td></tr>
+            <tr><td><span class="pill pill-success">204</span></td><td>Backward transition</td><td>audit row processing_error="backward transition rejected" · notice_error · 204</td></tr>
+            <tr><td><span class="pill pill-warning">401</span></td><td>Bad signature</td><td>NO audit row · adapter rejection precedes audit</td></tr>
+            <tr><td><span class="pill pill-warning">401</span></td><td>Partner-attribution mismatch</td><td>audit row + notice_error · 401</td></tr>
+            <tr><td><span class="pill pill-warning">404</span></td><td>Unknown provider</td><td>provider not in PharmacyProvider enum</td></tr>
+            <tr><td><span class="pill pill-error">500</span></td><td>Audit-row write fails</td><td>raise · Xis retries</td></tr>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <footer class="page-footer">
+      <div class="footer-grid">
+        <div>
+          <h4>Source documents</h4>
+          <ul>
+            <li><a href="../2026-05-07-commerce-domain.md">2026-05-07-commerce-domain.md</a> · spec</li>
+            <li><a href="../2026-05-07-commerce-domain-implementation-plan.md">2026-05-07-commerce-domain-implementation-plan.md</a> · plan</li>
+            <li><a href="https://linear.app/liti/issue/ENG-8165/novo-dominio-commerce">Linear · ENG-8165</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>About this document</h4>
+          <p style="color:var(--text-light); font-size:14px; line-height:1.6">A multi-page mini-site companion. Auto-regeneratable via <code style="background:transparent; color:var(--primary-light)">/visualize-plan</code>.</p>
+          <p style="color:var(--text-light); font-size:13px; margin-top:var(--s-12); font-family:var(--ff-mono)">Visual identity · Liti mobile design system<br>Outfit · #735ABF · #59A679</p>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>
