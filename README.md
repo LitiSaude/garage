@@ -25,6 +25,7 @@ claude plugin add ./garage
 |---|---|
 | `/review plan` | Review a feature description before coding and produce a requirements checklist |
 | `/review code` | Review code changes for violations across quality pillars (auto-detects stack) |
+| `/visualize-plan` | Generate a self-contained HTML "visual companion" for one or more PRD/TRD markdown files — flowcharts, ERD, state machines, deployment topology, live-feel API reference. Uses the Liti mobile design system. |
 
 ### Agents
 

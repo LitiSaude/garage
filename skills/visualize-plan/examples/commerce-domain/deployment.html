@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commerce Domain — Deployment</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--primary:#735ABF;--primary-dark:#453281;--primary-light:#B1A3DB;--primary-tint:#ECE7F7;--success:#59A679;--success-light:#DEEDE4;--error:#DA4167;--error-light:#F7D4DD;--warning:#E4CF67;--warning-light:#FBF8E9;--bg:#F5F6FA;--surface:#FFFFFF;--surface-alt:#FAFAFC;--text-dark:#100618;--text-strong:#867D90;--text-light:#BDB7C5;--text-on-brand:#FFFFFF;--stroke:#E6E3E8;--stroke-soft:#BDB7C5;--s-2:2px;--s-4:4px;--s-6:6px;--s-8:8px;--s-10:10px;--s-12:12px;--s-16:16px;--s-20:20px;--s-24:24px;--s-32:32px;--s-40:40px;--s-48:48px;--s-64:64px;--r-4:4px;--r-8:8px;--r-12:12px;--r-16:16px;--r-24:24px;--r-32:32px;--r-full:999px;--ff-sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--ff-mono:'JetBrains Mono','SF Mono',Consolas,monospace;--side-menu-w:280px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--ff-sans);background:var(--bg);color:var(--text-dark);line-height:1.5;font-size:16px;letter-spacing:-0.005em}
+  .shell{display:flex;min-height:100vh}
+  .side-menu{width:var(--side-menu-w);flex-shrink:0;background:var(--surface);border-right:1px solid var(--stroke);position:sticky;top:0;align-self:flex-start;height:100vh;overflow-y:auto;padding:var(--s-24) var(--s-20)}
+  .page-main{flex:1;min-width:0;padding:var(--s-48) var(--s-32);max-width:960px}
+  .side-menu-top{padding-bottom:var(--s-16);border-bottom:1px solid var(--stroke);margin-bottom:var(--s-16)}
+  .breadcrumb{display:inline-block;font-family:var(--ff-mono);font-size:12px;color:var(--primary);text-decoration:none;border:none;margin-bottom:var(--s-12);font-weight:500}
+  .breadcrumb:hover{color:var(--primary-dark)}
+  .spec-meta{display:flex;flex-direction:column;gap:var(--s-2)}
+  .spec-meta .eyebrow{font-family:var(--ff-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-dark)}
+  .spec-meta .last-updated{font-family:var(--ff-mono);font-size:11px;color:var(--text-strong)}
+  .side-menu nav{margin-bottom:var(--s-20)}
+  .side-menu nav h4{font-family:var(--ff-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-strong);margin-bottom:var(--s-8);padding:0 var(--s-8)}
+  .side-menu nav ul{list-style:none;padding:0}
+  .side-menu nav li{margin-bottom:var(--s-2)}
+  .side-menu nav a{display:block;padding:var(--s-6) var(--s-8);font-size:14px;color:var(--text-strong);text-decoration:none;border-radius:var(--r-8);transition:background .15s,color .15s;border-left:2px solid transparent}
+  .side-menu nav a:hover{background:var(--bg);color:var(--text-dark)}
+  .side-menu nav a.current{background:var(--primary-tint);color:var(--primary-dark);font-weight:600;border-left-color:var(--primary)}
+  .side-menu-anchors a{font-family:var(--ff-mono);font-size:12px;padding:var(--s-6) var(--s-8) var(--s-6) var(--s-12)}
+  .page-header{margin-bottom:var(--s-40)}
+  .page-eyebrow{font-family:var(--ff-mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary);margin-bottom:var(--s-12)}
+  h1{font-size:40px;font-weight:600;letter-spacing:-0.025em;line-height:1.1;margin-bottom:var(--s-12)}
+  h2{font-size:28px;font-weight:600;letter-spacing:-0.02em;line-height:1.2;margin-bottom:var(--s-12)}
+  h3{font-size:18px;font-weight:600;letter-spacing:-0.01em;margin-bottom:var(--s-8)}
+  h4{font-size:13px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;color:var(--text-strong)}
+  p{font-size:16px;color:var(--text-dark);margin-bottom:var(--s-12)}
+  p.lede{font-size:18px;color:var(--text-strong);max-width:780px;margin-bottom:var(--s-16)}
+  code{font-family:var(--ff-mono);font-size:0.9em;background:var(--bg);padding:1px 5px;border-radius:var(--r-4)}
+  a{color:var(--primary);text-decoration:none;border-bottom:1px solid var(--primary-light);transition:opacity .15s}
+  a:hover{opacity:0.7}
+  section{padding:var(--s-32) 0;border-top:1px solid var(--stroke);scroll-margin-top:var(--s-24)}
+  section:first-of-type{border-top:none;padding-top:0}
+  .section-eyebrow{font-family:var(--ff-mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary);margin-bottom:var(--s-12)}
+  .card{background:var(--surface);border:1px solid var(--stroke);border-radius:var(--r-16);padding:var(--s-24)}
+  .grid-3{display:grid;grid-template-columns:repeat(3, 1fr);gap:var(--s-16)}
+  .svg-frame{background:var(--surface);border:1px solid var(--stroke);border-radius:var(--r-16);padding:var(--s-24);overflow:hidden}
+  .svg-frame svg{width:100%;height:auto;display:block}
+  .svg-caption{font-family:var(--ff-mono);font-size:11px;color:var(--text-strong);margin-top:var(--s-12);text-align:center}
+  footer.page-footer{background:var(--text-dark);color:var(--text-light);padding:var(--s-40) var(--s-32);margin:var(--s-48) calc(-1 * var(--s-32)) calc(-1 * var(--s-48));font-size:14px}
+  footer.page-footer .footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-32)}
+  footer.page-footer h4{color:var(--text-on-brand);margin-bottom:var(--s-12)}
+  footer.page-footer a{color:var(--primary-light);border-color:var(--primary-light)}
+  footer.page-footer ul{list-style:none;padding:0}
+  footer.page-footer li{margin-bottom:var(--s-8);font-family:var(--ff-mono);font-size:13px}
+  @media (max-width:900px){.shell{flex-direction:column}.side-menu{position:static;width:100%;height:auto;border-right:none;border-bottom:1px solid var(--stroke)}.page-main{padding:var(--s-24) var(--s-20);max-width:100%}.grid-3{grid-template-columns:1fr}h1{font-size:32px}h2{font-size:22px}footer.page-footer .footer-grid{grid-template-columns:1fr}footer.page-footer{margin:var(--s-32) calc(-1 * var(--s-20)) calc(-1 * var(--s-24));padding:var(--s-32) var(--s-20)}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <aside class="side-menu">
+    <div class="side-menu-top">
+      <a class="breadcrumb" href="index.html">← Commerce Domain</a>
+      <div class="spec-meta">
+        <span class="eyebrow">ENG-8165 · v0.2</span>
+        <span class="last-updated">Updated 2026-05-09</span>
+      </div>
+    </div>
+    <nav class="side-menu-pages">
+      <h4>Pages</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="architecture.html">Architecture</a></li>
+        <li><a href="flows.html">Flows</a></li>
+        <li><a href="data-model.html">Data model</a></li>
+        <li><a href="api.html">API reference</a></li>
+        <li><a href="deployment.html" class="current">Deployment</a></li>
+        <li><a href="roadmap.html">Roadmap</a></li>
+      </ul>
+    </nav>
+    <nav class="side-menu-anchors">
+      <h4>On this page</h4>
+      <ul>
+        <li><a href="#topology">Topology</a></li>
+        <li><a href="#cross-domain">Cross-domain reads</a></li>
+        <li><a href="#migrations">Migrations · CI/CD</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="page-main">
+
+    <header class="page-header">
+      <div class="page-eyebrow">Chapter 05 · Deployment</div>
+      <h1>Deployment topology</h1>
+      <p class="lede">One monorepo. Two Fly.io apps behind <em>one</em> AWS API Gateway. Three connection strings. <em>"Deployment-time decomposition, not service-level."</em> Source stays unified; the process is separate; the public surface is shared. <code>liti-commerce</code> is internal-only on Fly's network — mobile reaches it via <code>api.litisaude.com.br/commerce/{proxy+}</code> with <code>X-Origin-Token</code> enforcement.</p>
+    </header>
+
+    <!-- ─── Topology ─── -->
+    <section id="topology">
+      <div class="section-eyebrow">Topology</div>
+      <h2>One gateway up front. Same monorepo at the top. Two apps in between. Shared infra at the bottom.</h2>
+
+      <div class="svg-frame">
+        <svg viewBox="0 0 1100 640" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono, monospace">
+          <defs>
+            <marker id="arr-dep" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#735ABF"/></marker>
+            <marker id="arr-dep-ro" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#867D90"/></marker>
+          </defs>
+          <g><rect x="40" y="20" width="1020" height="60" rx="14" fill="#100618"/>
+            <text x="60" y="44" font-size="14" font-weight="600" fill="#FFFFFF">github.com/LitiSaude/pygeia · single monorepo</text>
+            <text x="60" y="64" font-size="11" fill="#B1A3DB" font-family="JetBrains Mono, monospace">commerce code lives alongside main pygeia in domains/commerce, web_api/apps/commerce_app.py, workers/commerce_worker.py, fly.commerce.toml</text>
+          </g>
+          <line x1="280" y1="80" x2="280" y2="110" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-dep)"/>
+          <line x1="820" y1="80" x2="820" y2="110" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-dep)"/>
+          <g><rect x="60" y="120" width="440" height="280" rx="16" fill="#FFFFFF" stroke="#867D90" stroke-width="1.5"/>
+            <text x="80" y="148" font-size="13" font-weight="600" fill="#100618">main pygeia (Fly.io)</text>
+            <text x="80" y="164" font-size="10" fill="#867D90" font-family="JetBrains Mono, monospace">existing deploy · unchanged</text>
+            <rect x="80" y="180" width="180" height="60" rx="10" fill="#F5F6FA" stroke="#867D90"/>
+            <text x="170" y="202" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">web</text>
+            <text x="170" y="220" font-size="10" fill="#867D90" text-anchor="middle">FastAPI · all existing routes</text>
+            <rect x="280" y="180" width="200" height="60" rx="10" fill="#F5F6FA" stroke="#867D90"/>
+            <text x="380" y="202" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">background_jobs_base_worker</text>
+            <text x="380" y="220" font-size="10" fill="#867D90" text-anchor="middle">existing task queues</text>
+            <rect x="80" y="260" width="400" height="50" rx="10" fill="#FFFFFF" stroke="#867D90"/>
+            <text x="280" y="282" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">continuous_care DB · customer_lifecycle DB · …</text>
+            <text x="280" y="298" font-size="10" fill="#867D90" text-anchor="middle">primary R/W</text>
+            <rect x="80" y="325" width="400" height="50" rx="10" fill="#ECE7F7" stroke="#735ABF"/>
+            <text x="280" y="346" font-size="11" font-weight="600" fill="#735ABF" text-anchor="middle">commerce_bff/v1/home_router · NEW</text>
+            <text x="280" y="362" font-size="10" fill="#867D90" text-anchor="middle">composes prescribed-meds quick-buy card</text>
+          </g>
+          <g><rect x="600" y="120" width="440" height="280" rx="16" fill="#ECE7F7" stroke="#735ABF" stroke-width="2"/>
+            <text x="620" y="148" font-size="13" font-weight="600" fill="#735ABF">liti-commerce (Fly.io · NEW)</text>
+            <text x="620" y="164" font-size="10" fill="#867D90" font-family="JetBrains Mono, monospace">independent deploy · own metrics</text>
+            <rect x="620" y="180" width="180" height="60" rx="10" fill="#FFFFFF" stroke="#735ABF"/>
+            <text x="710" y="202" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">web</text>
+            <text x="710" y="220" font-size="10" fill="#867D90" text-anchor="middle">FastAPI · commerce_app</text>
+            <rect x="820" y="180" width="200" height="60" rx="10" fill="#FFFFFF" stroke="#735ABF"/>
+            <text x="920" y="202" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">commerce_worker</text>
+            <text x="920" y="220" font-size="10" fill="#867D90" text-anchor="middle">queue · commerce-default</text>
+            <rect x="620" y="260" width="400" height="50" rx="10" fill="#FFFFFF" stroke="#735ABF"/>
+            <text x="820" y="282" font-size="11" font-weight="600" fill="#100618" text-anchor="middle">commerce DB · primary R/W</text>
+            <text x="820" y="298" font-size="10" fill="#735ABF" text-anchor="middle">5 new tables (PR 1a)</text>
+            <rect x="620" y="325" width="400" height="50" rx="10" fill="#ECE7F7" stroke="#735ABF"/>
+            <text x="820" y="346" font-size="11" font-weight="600" fill="#735ABF" text-anchor="middle">internal Fly network only</text>
+            <text x="820" y="362" font-size="10" fill="#867D90" text-anchor="middle">no public DNS · X-Origin-Token enforced</text>
+          </g>
+          <line x1="560" y1="290" x2="615" y2="290" stroke="#867D90" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-dep-ro)"/>
+          <text x="588" y="282" font-size="9" font-weight="600" fill="#867D90" text-anchor="middle">RO</text>
+          <g><rect x="40" y="430" width="1020" height="180" rx="16" fill="#FAFAFC" stroke="#E6E3E8" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <text x="60" y="458" font-size="13" font-weight="600" fill="#100618">Shared infrastructure · cross-process today</text>
+            <rect x="60" y="475" width="200" height="80" rx="10" fill="#FFFFFF" stroke="#867D90"/>
+            <text x="160" y="498" font-size="12" font-weight="600" fill="#100618" text-anchor="middle">Temporal cluster</text>
+            <text x="160" y="516" font-size="10" fill="#867D90" text-anchor="middle">commerce uses task queue</text>
+            <text x="160" y="530" font-size="10" font-family="JetBrains Mono, monospace" fill="#735ABF" text-anchor="middle">commerce-default</text>
+            <text x="160" y="546" font-size="9" fill="#867D90" text-anchor="middle">other workers don't compete</text>
+            <rect x="280" y="475" width="200" height="80" rx="10" fill="#FFFFFF" stroke="#867D90"/>
+            <text x="380" y="498" font-size="12" font-weight="600" fill="#100618" text-anchor="middle">Pub/Sub</text>
+            <text x="380" y="516" font-size="10" fill="#867D90" text-anchor="middle">commerce publishes</text>
+            <text x="380" y="530" font-size="10" font-family="JetBrains Mono, monospace" fill="#735ABF" text-anchor="middle">pharmacy_order_*</text>
+            <text x="380" y="546" font-size="9" fill="#867D90" text-anchor="middle">main pygeia subscribers consume</text>
+            <rect x="500" y="475" width="200" height="80" rx="10" fill="#FFFFFF" stroke="#867D90"/>
+            <text x="600" y="498" font-size="12" font-weight="600" fill="#100618" text-anchor="middle">Datadog</text>
+            <text x="600" y="516" font-size="10" fill="#867D90" text-anchor="middle">APM + custom events</text>
+            <text x="600" y="530" font-size="10" font-family="JetBrains Mono, monospace" fill="#735ABF" text-anchor="middle">DD_SERVICE=liti-commerce</text>
+            <text x="600" y="546" font-size="9" fill="#867D90" text-anchor="middle">separate dashboards</text>
+            <rect x="720" y="475" width="320" height="80" rx="10" fill="#FFFFFF" stroke="#867D90"/>
+            <text x="880" y="498" font-size="12" font-weight="600" fill="#100618" text-anchor="middle">External providers</text>
+            <text x="880" y="516" font-size="10" fill="#867D90" text-anchor="middle">Vindi · Xis Farmácia · S3 · Clerk</text>
+            <text x="880" y="534" font-size="10" font-family="JetBrains Mono, monospace" fill="#735ABF" text-anchor="middle">webhooks → api.litisaude.com.br/commerce/v1/...</text>
+          </g>
+          <line x1="380" y1="400" x2="380" y2="425" stroke="#867D90" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arr-dep-ro)"/>
+          <line x1="700" y1="400" x2="700" y2="425" stroke="#867D90" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arr-dep-ro)"/>
+        </svg>
+        <div class="svg-caption">AWS API Gateway fronts both Fly apps · liti-commerce internal-only · BFF lives in pygeia main · shared monorepo + infrastructure</div>
+      </div>
+    </section>
+
+    <!-- ─── Cross-domain ─── -->
+    <section id="cross-domain">
+      <div class="section-eyebrow">Cross-domain reads</div>
+      <h2>Three connection strings · v1 direct DB.</h2>
+
+      <div class="grid-3" style="margin-top:var(--s-24)">
+        <div class="card">
+          <h4 style="color:var(--primary)">Cross-domain reads</h4>
+          <p style="font-size:13px; margin-top:var(--s-8)">Standalone process holds 3 connection strings: <code>COMMERCE_DATABASE_URL</code> R/W + <code>CONTINUOUS_CARE_DATABASE_URL</code> RO + <code>CUSTOMER_LIFECYCLE_DATABASE_URL</code> RO.</p>
+          <p style="font-size:12px; color:var(--text-strong); margin-top:var(--s-8)"><strong>Trade-off:</strong> tight runtime coupling — schema migrations in cont_care must stay backward-compatible until commerce redeploys. Same as today's monolith; only the process boundary is new.</p>
+        </div>
+        <div class="card">
+          <h4 style="color:var(--success)">Inter-process communication</h4>
+          <p style="font-size:13px; margin-top:var(--s-8)"><strong>Pub/Sub:</strong> commerce publishes <code>pharmacy_order_*</code> events; main pygeia subscribers consume.</p>
+          <p style="font-size:13px"><strong>Temporal:</strong> shared cluster, separate task queue (<code>commerce-default</code>).</p>
+          <p style="font-size:13px"><strong>HTTP commerce → main:</strong> none v1.</p>
+        </div>
+        <div class="card">
+          <h4 style="color:#A88E1A">Phase-2 path</h4>
+          <p style="font-size:13px; margin-top:var(--s-8)">Swap direct DB access for HTTP RPC via a thin <code>lib/internal_api_client/</code> behind an env flag. Decouples deploy cadence at the cost of latency.</p>
+          <p style="font-size:12px; color:var(--text-strong); margin-top:var(--s-8)"><strong>Out of scope v1.</strong> Don't build now.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Migrations / CI/CD ─── -->
+    <section id="migrations">
+      <div class="section-eyebrow">Migrations · CI/CD</div>
+      <h2>Release-command runs Alembic before image goes live.</h2>
+
+      <div class="grid-3" style="margin-top:var(--s-24)">
+        <div class="card">
+          <h4 style="color:var(--primary)">Migrations</h4>
+          <p style="font-size:13px; margin-top:var(--s-8)">Fly.io <code>release_command</code> runs <code>alembic upgrade head</code> against <code>COMMERCE_DATABASE_URL</code> before the new image goes live. Failure aborts the deploy.</p>
+          <p style="font-size:12px; color:var(--text-strong); margin-top:var(--s-8)"><strong>Main pygeia does NOT</strong> run commerce migrations — they're owned by this app.</p>
+        </div>
+        <div class="card">
+          <h4 style="color:var(--success)">CI/CD</h4>
+          <p style="font-size:13px; margin-top:var(--s-8)"><code>.github/workflows/deploy-commerce.yml</code> triggers on push to main when commerce-relevant paths change. Steps: tests → lint → cross-domain-import check → build image → <code>flyctl deploy</code>.</p>
+          <p style="font-size:12px; color:var(--text-strong); margin-top:var(--s-8)">Concurrency lock so two PRs landing fast don't race deploys.</p>
+        </div>
+        <div class="card">
+          <h4 style="color:#A88E1A">Operational posture</h4>
+          <p style="font-size:13px; margin-top:var(--s-8)">Same on-call rotation as main pygeia, with separate Datadog monitor configured per <code>liti-commerce</code> service.</p>
+          <p style="font-size:13px">Logs: Fly.io → Datadog log shipping. Same redaction/PII rules.</p>
+          <p style="font-size:13px">Cost: ~$15-30/mo Fly.io for the two process types at min=1 each; right-sized after one week of staging traffic.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="page-footer">
+      <div class="footer-grid">
+        <div>
+          <h4>Source documents</h4>
+          <ul>
+            <li><a href="../2026-05-07-commerce-domain.md">2026-05-07-commerce-domain.md</a> · spec</li>
+            <li><a href="../2026-05-07-commerce-domain-implementation-plan.md">2026-05-07-commerce-domain-implementation-plan.md</a> · plan</li>
+            <li><a href="https://linear.app/liti/issue/ENG-8165/novo-dominio-commerce">Linear · ENG-8165</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>About this document</h4>
+          <p style="color:var(--text-light); font-size:14px; line-height:1.6">A multi-page mini-site companion. Auto-regeneratable via <code style="background:transparent; color:var(--primary-light)">/visualize-plan</code>.</p>
+          <p style="color:var(--text-light); font-size:13px; margin-top:var(--s-12); font-family:var(--ff-mono)">Visual identity · Liti mobile design system<br>Outfit · #735ABF · #59A679</p>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>

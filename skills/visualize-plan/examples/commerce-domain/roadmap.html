@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commerce Domain — Roadmap</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--primary:#735ABF;--primary-dark:#453281;--primary-light:#B1A3DB;--primary-tint:#ECE7F7;--success:#59A679;--success-light:#DEEDE4;--error:#DA4167;--error-light:#F7D4DD;--warning:#E4CF67;--warning-light:#FBF8E9;--bg:#F5F6FA;--surface:#FFFFFF;--surface-alt:#FAFAFC;--text-dark:#100618;--text-strong:#867D90;--text-light:#BDB7C5;--text-on-brand:#FFFFFF;--stroke:#E6E3E8;--stroke-soft:#BDB7C5;--s-2:2px;--s-4:4px;--s-6:6px;--s-8:8px;--s-10:10px;--s-12:12px;--s-16:16px;--s-20:20px;--s-24:24px;--s-32:32px;--s-40:40px;--s-48:48px;--s-64:64px;--r-4:4px;--r-8:8px;--r-12:12px;--r-16:16px;--r-24:24px;--r-32:32px;--r-full:999px;--ff-sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--ff-mono:'JetBrains Mono','SF Mono',Consolas,monospace;--side-menu-w:280px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--ff-sans);background:var(--bg);color:var(--text-dark);line-height:1.5;font-size:16px;letter-spacing:-0.005em}
+  .shell{display:flex;min-height:100vh}
+  .side-menu{width:var(--side-menu-w);flex-shrink:0;background:var(--surface);border-right:1px solid var(--stroke);position:sticky;top:0;align-self:flex-start;height:100vh;overflow-y:auto;padding:var(--s-24) var(--s-20)}
+  .page-main{flex:1;min-width:0;padding:var(--s-48) var(--s-32);max-width:960px}
+  .side-menu-top{padding-bottom:var(--s-16);border-bottom:1px solid var(--stroke);margin-bottom:var(--s-16)}
+  .breadcrumb{display:inline-block;font-family:var(--ff-mono);font-size:12px;color:var(--primary);text-decoration:none;border:none;margin-bottom:var(--s-12);font-weight:500}
+  .breadcrumb:hover{color:var(--primary-dark)}
+  .spec-meta{display:flex;flex-direction:column;gap:var(--s-2)}
+  .spec-meta .eyebrow{font-family:var(--ff-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-dark)}
+  .spec-meta .last-updated{font-family:var(--ff-mono);font-size:11px;color:var(--text-strong)}
+  .side-menu nav{margin-bottom:var(--s-20)}
+  .side-menu nav h4{font-family:var(--ff-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-strong);margin-bottom:var(--s-8);padding:0 var(--s-8)}
+  .side-menu nav ul{list-style:none;padding:0}
+  .side-menu nav li{margin-bottom:var(--s-2)}
+  .side-menu nav a{display:block;padding:var(--s-6) var(--s-8);font-size:14px;color:var(--text-strong);text-decoration:none;border-radius:var(--r-8);transition:background .15s,color .15s;border-left:2px solid transparent}
+  .side-menu nav a:hover{background:var(--bg);color:var(--text-dark)}
+  .side-menu nav a.current{background:var(--primary-tint);color:var(--primary-dark);font-weight:600;border-left-color:var(--primary)}
+  .side-menu-anchors a{font-family:var(--ff-mono);font-size:12px;padding:var(--s-6) var(--s-8) var(--s-6) var(--s-12)}
+  .page-header{margin-bottom:var(--s-40)}
+  .page-eyebrow{font-family:var(--ff-mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary);margin-bottom:var(--s-12)}
+  h1{font-size:40px;font-weight:600;letter-spacing:-0.025em;line-height:1.1;margin-bottom:var(--s-12)}
+  h2{font-size:28px;font-weight:600;letter-spacing:-0.02em;line-height:1.2;margin-bottom:var(--s-12)}
+  h3{font-size:18px;font-weight:600;letter-spacing:-0.01em;margin-bottom:var(--s-8)}
+  h4{font-size:13px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;color:var(--text-strong)}
+  p{font-size:16px;color:var(--text-dark);margin-bottom:var(--s-12)}
+  p.lede{font-size:18px;color:var(--text-strong);max-width:780px;margin-bottom:var(--s-16)}
+  code{font-family:var(--ff-mono);font-size:0.9em;background:var(--bg);padding:1px 5px;border-radius:var(--r-4)}
+  a{color:var(--primary);text-decoration:none;border-bottom:1px solid var(--primary-light);transition:opacity .15s}
+  a:hover{opacity:0.7}
+  section{padding:var(--s-32) 0;border-top:1px solid var(--stroke);scroll-margin-top:var(--s-24)}
+  section:first-of-type{border-top:none;padding-top:0}
+  .section-eyebrow{font-family:var(--ff-mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary);margin-bottom:var(--s-12)}
+  .callout{background:var(--primary-tint);border-left:3px solid var(--primary);padding:var(--s-16) var(--s-20);border-radius:0 var(--r-8) var(--r-8) 0;margin:var(--s-20) 0}
+  .callout.success{background:var(--success-light);border-color:var(--success)}
+  .callout-label{font-family:var(--ff-mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--primary);margin-bottom:var(--s-4)}
+  .callout.success .callout-label{color:var(--success)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{text-align:left;font-weight:600;padding:var(--s-10) var(--s-12);border-bottom:1.5px solid var(--text-dark);color:var(--text-dark);font-size:13px;text-transform:uppercase;letter-spacing:0.04em}
+  td{padding:var(--s-10) var(--s-12);border-bottom:1px solid var(--stroke);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td.mono{font-family:var(--ff-mono);font-size:13px;color:var(--primary-dark)}
+  .pill{display:inline-block;padding:2px 8px;border-radius:var(--r-full);font-family:var(--ff-mono);font-size:11px;font-weight:500}
+  .pill-primary{background:var(--primary-tint);color:var(--primary-dark)}
+  .pill-success{background:var(--success-light);color:#2D6A48}
+  .pill-warning{background:var(--warning-light);color:#A88E1A}
+  .pill-muted{background:var(--bg);color:var(--text-strong)}
+  .svg-frame{background:var(--surface);border:1px solid var(--stroke);border-radius:var(--r-16);padding:var(--s-24);overflow:hidden}
+  .svg-frame svg{width:100%;height:auto;display:block}
+  .svg-caption{font-family:var(--ff-mono);font-size:11px;color:var(--text-strong);margin-top:var(--s-12);text-align:center}
+  footer.page-footer{background:var(--text-dark);color:var(--text-light);padding:var(--s-40) var(--s-32);margin:var(--s-48) calc(-1 * var(--s-32)) calc(-1 * var(--s-48));font-size:14px}
+  footer.page-footer .footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-32)}
+  footer.page-footer h4{color:var(--text-on-brand);margin-bottom:var(--s-12)}
+  footer.page-footer a{color:var(--primary-light);border-color:var(--primary-light)}
+  footer.page-footer ul{list-style:none;padding:0}
+  footer.page-footer li{margin-bottom:var(--s-8);font-family:var(--ff-mono);font-size:13px}
+  @media (max-width:900px){.shell{flex-direction:column}.side-menu{position:static;width:100%;height:auto;border-right:none;border-bottom:1px solid var(--stroke)}.page-main{padding:var(--s-24) var(--s-20);max-width:100%}h1{font-size:32px}h2{font-size:22px}footer.page-footer .footer-grid{grid-template-columns:1fr}footer.page-footer{margin:var(--s-32) calc(-1 * var(--s-20)) calc(-1 * var(--s-24));padding:var(--s-32) var(--s-20)}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <aside class="side-menu">
+    <div class="side-menu-top">
+      <a class="breadcrumb" href="index.html">← Commerce Domain</a>
+      <div class="spec-meta">
+        <span class="eyebrow">ENG-8165 · v0.2</span>
+        <span class="last-updated">Updated 2026-05-09</span>
+      </div>
+    </div>
+    <nav class="side-menu-pages">
+      <h4>Pages</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="architecture.html">Architecture</a></li>
+        <li><a href="flows.html">Flows</a></li>
+        <li><a href="data-model.html">Data model</a></li>
+        <li><a href="api.html">API reference</a></li>
+        <li><a href="deployment.html">Deployment</a></li>
+        <li><a href="roadmap.html" class="current">Roadmap</a></li>
+      </ul>
+    </nav>
+    <nav class="side-menu-anchors">
+      <h4>On this page</h4>
+      <ul>
+        <li><a href="#prs">PR plan</a></li>
+        <li><a href="#prereqs">OOB prerequisites</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="page-main">
+
+    <header class="page-header">
+      <div class="page-eyebrow">Chapter 06 · Roadmap</div>
+      <h1>Roadmap</h1>
+      <p class="lede">14 PRs across feature + deploy tracks. Some sequential, some parallel. Pick the mechanism that matches the dependency graph; don't over-orchestrate. Single-agent + worktree is the workhorse; two-agents-in-parallel only when files are disjoint.</p>
+    </header>
+
+    <!-- ─── PRs ─── -->
+    <section id="prs">
+      <div class="section-eyebrow">PR plan · two tracks</div>
+      <h2>14 PRs across feature + deploy tracks.</h2>
+
+      <div class="svg-frame">
+        <svg viewBox="0 0 1100 640" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono, monospace">
+          <defs>
+            <marker id="arr-pr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#735ABF"/></marker>
+            <marker id="arr-pr-deploy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#59A679"/></marker>
+          </defs>
+          <g><rect x="40" y="20" width="1020" height="30" rx="6" fill="#ECE7F7"/><text x="60" y="40" font-size="12" font-weight="600" fill="#453281">FEATURE TRACK</text></g>
+          <g><rect x="40" y="70" width="120" height="60" rx="10" fill="#100618"/><text x="100" y="92" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">PR 0</text><text x="100" y="108" font-size="9" fill="#B1A3DB" text-anchor="middle">spec + Xis ref</text><text x="100" y="120" font-size="9" fill="#B1A3DB" text-anchor="middle">no code</text></g>
+          <line x1="160" y1="100" x2="195" y2="100" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-pr)"/>
+          <g><rect x="200" y="70" width="100" height="60" rx="10" fill="#735ABF" stroke="#735ABF"/><text x="250" y="92" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">PR 1a</text><text x="250" y="108" font-size="9" fill="#ECE7F7" text-anchor="middle">migration</text><text x="250" y="120" font-size="9" fill="#ECE7F7" text-anchor="middle">deploy alone</text></g>
+          <line x1="300" y1="100" x2="335" y2="100" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-pr)"/>
+          <g><rect x="340" y="70" width="100" height="60" rx="10" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/><text x="390" y="92" font-size="13" font-weight="700" fill="#100618" text-anchor="middle">PR 1b</text><text x="390" y="108" font-size="9" fill="#867D90" text-anchor="middle">app wiring</text><text x="390" y="120" font-size="9" fill="#867D90" text-anchor="middle">facade · makefile</text></g>
+          <line x1="440" y1="100" x2="475" y2="80" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-pr)"/>
+          <line x1="440" y1="100" x2="475" y2="120" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-pr)"/>
+          <g><rect x="480" y="50" width="100" height="50" rx="10" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/><text x="530" y="70" font-size="13" font-weight="700" fill="#100618" text-anchor="middle">PR 2</text><text x="530" y="86" font-size="9" fill="#867D90" text-anchor="middle">pharmacy_providers</text></g>
+          <g><rect x="480" y="105" width="100" height="50" rx="10" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/><text x="530" y="125" font-size="13" font-weight="700" fill="#100618" text-anchor="middle">PR 3</text><text x="530" y="141" font-size="9" fill="#867D90" text-anchor="middle">payment_providers</text></g>
+          <text x="530" y="175" font-size="9" font-weight="600" fill="#A88E1A" text-anchor="middle">parallel agents · own worktrees</text>
+          <line x1="580" y1="75" x2="615" y2="100" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-pr)"/>
+          <line x1="580" y1="130" x2="615" y2="100" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-pr)"/>
+          <g><rect x="620" y="70" width="100" height="60" rx="10" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/><text x="670" y="92" font-size="13" font-weight="700" fill="#100618" text-anchor="middle">PR 4</text><text x="670" y="108" font-size="9" fill="#867D90" text-anchor="middle">read · routing</text><text x="670" y="120" font-size="9" fill="#867D90" text-anchor="middle">middleware</text></g>
+          <line x1="720" y1="100" x2="755" y2="100" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-pr)"/>
+          <g><rect x="760" y="70" width="100" height="60" rx="10" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/><text x="810" y="92" font-size="13" font-weight="700" fill="#100618" text-anchor="middle">PR 5</text><text x="810" y="108" font-size="9" fill="#867D90" text-anchor="middle">write</text><text x="810" y="120" font-size="9" fill="#867D90" text-anchor="middle">interactors</text></g>
+          <line x1="860" y1="100" x2="895" y2="80" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-pr)"/>
+          <line x1="860" y1="100" x2="895" y2="120" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-pr)"/>
+          <g><rect x="900" y="50" width="120" height="50" rx="10" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/><text x="960" y="70" font-size="13" font-weight="700" fill="#100618" text-anchor="middle">PR 5.5</text><text x="960" y="86" font-size="9" fill="#867D90" text-anchor="middle">BFF · home (pygeia)</text></g>
+          <g><rect x="900" y="105" width="120" height="50" rx="10" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/><text x="960" y="125" font-size="13" font-weight="700" fill="#100618" text-anchor="middle">PR 6</text><text x="960" y="141" font-size="9" fill="#867D90" text-anchor="middle">preview · place wf</text></g>
+          <text x="960" y="175" font-size="9" font-weight="600" fill="#A88E1A" text-anchor="middle">parallel agents · own worktrees</text>
+          <line x1="960" y1="160" x2="960" y2="195" stroke="#735ABF" stroke-width="1.5"/>
+          <line x1="960" y1="195" x2="540" y2="195" stroke="#735ABF" stroke-width="1.5"/>
+          <line x1="540" y1="195" x2="540" y2="225" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-pr)"/>
+          <g><rect x="490" y="230" width="120" height="60" rx="10" fill="#F7D4DD" stroke="#DA4167" stroke-width="2"/><text x="550" y="252" font-size="13" font-weight="700" fill="#8E1B36" text-anchor="middle">PR 7</text><text x="550" y="268" font-size="9" fill="#8E1B36" text-anchor="middle">webhooks · fulfill wf</text><text x="550" y="280" font-size="9" font-weight="600" fill="#8E1B36" text-anchor="middle">+ security review</text></g>
+          <line x1="610" y1="260" x2="645" y2="240" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-pr)"/>
+          <line x1="610" y1="260" x2="645" y2="280" stroke="#735ABF" stroke-width="1.5" marker-end="url(#arr-pr)"/>
+          <g><rect x="650" y="210" width="100" height="50" rx="10" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/><text x="700" y="230" font-size="13" font-weight="700" fill="#100618" text-anchor="middle">PR 8</text><text x="700" y="246" font-size="9" fill="#867D90" text-anchor="middle">list · detail</text></g>
+          <g><rect x="650" y="265" width="100" height="50" rx="10" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/><text x="700" y="285" font-size="13" font-weight="700" fill="#100618" text-anchor="middle">PR 9</text><text x="700" y="301" font-size="9" fill="#867D90" text-anchor="middle">crons</text></g>
+          <text x="700" y="335" font-size="9" font-weight="600" fill="#A88E1A" text-anchor="middle">parallel agents · own worktrees</text>
+          <g><rect x="40" y="380" width="1020" height="30" rx="6" fill="#DEEDE4"/><text x="60" y="400" font-size="12" font-weight="600" fill="#2D6A48">DEPLOY TRACK · parallel to feature track</text></g>
+          <g><rect x="200" y="430" width="120" height="60" rx="10" fill="#FFFFFF" stroke="#59A679" stroke-width="2"/><text x="260" y="452" font-size="13" font-weight="700" fill="#2D6A48" text-anchor="middle">PR D1</text><text x="260" y="468" font-size="9" fill="#867D90" text-anchor="middle">commerce_app +</text><text x="260" y="480" font-size="9" fill="#867D90" text-anchor="middle">commerce_worker</text></g>
+          <line x1="320" y1="460" x2="375" y2="460" stroke="#59A679" stroke-width="1.5" marker-end="url(#arr-pr-deploy)"/>
+          <g><rect x="380" y="430" width="160" height="60" rx="10" fill="#FFFFFF" stroke="#59A679" stroke-width="2"/><text x="460" y="452" font-size="13" font-weight="700" fill="#2D6A48" text-anchor="middle">PR D2</text><text x="460" y="468" font-size="9" fill="#867D90" text-anchor="middle">fly.commerce.toml +</text><text x="460" y="480" font-size="9" fill="#867D90" text-anchor="middle">staging deploy</text></g>
+          <line x1="540" y1="460" x2="595" y2="460" stroke="#59A679" stroke-width="1.5" marker-end="url(#arr-pr-deploy)"/>
+          <g><rect x="600" y="430" width="180" height="60" rx="10" fill="#100618" stroke="#100618"/><text x="690" y="452" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">PR D3</text><text x="690" y="468" font-size="9" fill="#B1A3DB" text-anchor="middle">webhook URL migration +</text><text x="690" y="480" font-size="9" fill="#B1A3DB" text-anchor="middle">production cutover</text></g>
+          <line x1="390" y1="130" x2="260" y2="430" stroke="#867D90" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="285" y="270" font-size="9" fill="#867D90" font-style="italic">D1 needs 1b</text>
+          <line x1="700" y1="315" x2="690" y2="430" stroke="#867D90" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="715" y="380" font-size="9" fill="#867D90" font-style="italic">D3 needs 7</text>
+          <g transform="translate(60, 540)">
+            <rect x="0" y="0" width="980" height="80" rx="10" fill="#F5F6FA" stroke="#E6E3E8"/>
+            <text x="20" y="22" font-size="11" font-weight="600" fill="#100618">Execution mechanism per PR · this is how the coordinator drives them</text>
+            <g transform="translate(20, 36)"><rect width="14" height="14" rx="3" fill="#100618"/><text x="20" y="11" font-size="11" fill="#100618">no agent · markdown only (PR 0)</text></g>
+            <g transform="translate(280, 36)"><rect width="14" height="14" rx="3" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/><text x="20" y="11" font-size="11" fill="#100618">single agent · own worktree</text></g>
+            <g transform="translate(540, 36)"><rect width="14" height="14" rx="3" fill="#FFFFFF" stroke="#735ABF" stroke-width="1.5"/><rect x="2" y="2" width="10" height="10" rx="2" fill="#A88E1A" opacity="0.4"/><text x="20" y="11" font-size="11" fill="#100618">parallel agents · disjoint files</text></g>
+            <g transform="translate(800, 36)"><rect width="14" height="14" rx="3" fill="#F7D4DD" stroke="#DA4167" stroke-width="2"/><text x="20" y="11" font-size="11" fill="#100618">+ specialist reviewer agent</text></g>
+            <text x="20" y="68" font-size="11" fill="#867D90">Coordinator (this conversation) feeds context, reviews diffs, opens PRs via gh. Inside each agent: read code-standards before writing a line.</text>
+          </g>
+        </svg>
+        <div class="svg-caption">14 PRs · 2 tracks · arrows show what blocks what · color shows execution mechanism</div>
+      </div>
+    </section>
+
+    <!-- ─── OOB Prerequisites ─── -->
+    <section id="prereqs">
+      <div class="section-eyebrow">Out-of-band prerequisites</div>
+      <h2>Eleven blockers that don't live in the code.</h2>
+      <p class="lede">These need to be unblocked outside the engineering work — credentials, gateway routes, ops decisions. Each one shows which PR(s) it blocks.</p>
+
+      <table style="margin-top:var(--s-32)">
+        <thead>
+          <tr>
+            <th style="width:40px">#</th>
+            <th>Prerequisite</th>
+            <th style="width:240px">Blocks</th>
+            <th style="width:120px">Owner</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">01</td><td><strong>staffs.professional_document_state</strong> column on <code>continuous_care</code> · two-PR migration (migration first, model second)</td><td><span class="pill pill-primary">PR 1a column NN</span></td><td>Eng (cont_care)</td></tr>
+          <tr><td class="mono">02</td><td><strong>Xis Farmácia sandbox creds</strong> — client_id + client_secret + webhook shared secret + delivery method + safe test SKU</td><td><span class="pill pill-primary">PR 2 · PR 7</span></td><td>Ops + Xis support</td></tr>
+          <tr><td class="mono">03</td><td><strong>Vindi sandbox creds</strong> + per-SKU vindi_product_id curation + fiscal-note tax codes + webhook Basic Auth credentials</td><td><span class="pill pill-primary">PR 3 · PR 5</span></td><td>Finance + Ops</td></tr>
+          <tr><td class="mono">04</td><td><strong>Pricing pass-through confirmation</strong> — no Liti markup v1</td><td><span class="pill pill-primary">PR 5 preview formula</span></td><td>Product</td></tr>
+          <tr><td class="mono">05</td><td><strong>Vindi tokenization frontend snippet</strong> for gateway_token</td><td><span class="pill pill-primary">PR 6 e2e staging test</span></td><td>Mobile + Vindi docs</td></tr>
+          <tr><td class="mono">06</td><td><strong>Vindi customer external_id storage decision</strong> (or stay with email-based lookup)</td><td><span class="pill pill-muted">PR 3 impl detail</span></td><td>Eng</td></tr>
+          <tr><td class="mono">07</td><td><strong>Fly.io org + access tokens</strong> for CI · provisioned <code>liti-commerce-staging</code> + <code>liti-commerce</code> apps in <code>gru</code> · <strong>no public DNS</strong> (internal Fly network only)</td><td><span class="pill pill-success">PR D2</span></td><td>Ops</td></tr>
+          <tr><td class="mono">08</td><td><strong>AWS API Gateway routes</strong> — add <code>/commerce/v1/home/{proxy+}</code> → pygeia and <code>/commerce/{proxy+}</code> → liti-commerce in <code>pygeia/iac/environments/.../api_gateway_routes.tf</code>; webhook paths exempted in <code>api_gateway_denied_paths.tf</code></td><td><span class="pill pill-success">PR D3</span></td><td>Ops + Eng (IaC)</td></tr>
+          <tr><td class="mono">09</td><td><strong>Read-only DB roles</strong> for <code>continuous_care</code> + <code>customer_lifecycle</code> (separate from main pygeia's app role)</td><td><span class="pill pill-success">PR D1 · PR D2</span></td><td>Ops + DB</td></tr>
+          <tr><td class="mono">10</td><td><strong>Webhook URL update</strong> coordinated with Vindi + Xis support — gateway-fronted at <code>api.litisaude.com.br/commerce/v1/webhooks/...</code></td><td><span class="pill pill-success">PR D3 cutover</span></td><td>Ops + provider support</td></tr>
+          <tr><td class="mono">11</td><td><strong>medication_sku_mapping seed</strong> — finance/clinical sign-off on the GLP-1 SKU set (<code>medication_id</code> ↔ SKU pairings) before staging cutover</td><td><span class="pill pill-primary">PR 5 seed · PR 5.5 BFF integration test</span></td><td>Finance + Clinical</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout success" style="margin-top:var(--s-24)">
+        <div class="callout-label">Removed from open list</div>
+        Customer ↔ Patient linkage — <code>patient.customer_id</code> exists, and <code>get_patient_by_customer_id</code> is already implemented. Confirmed via grep at <code>domains/continuous_care/entities/patient.py:19</code>.
+      </div>
+    </section>
+
+    <footer class="page-footer">
+      <div class="footer-grid">
+        <div>
+          <h4>Source documents</h4>
+          <ul>
+            <li><a href="../2026-05-07-commerce-domain.md">2026-05-07-commerce-domain.md</a> · spec</li>
+            <li><a href="../2026-05-07-commerce-domain-implementation-plan.md">2026-05-07-commerce-domain-implementation-plan.md</a> · plan</li>
+            <li><a href="https://linear.app/liti/issue/ENG-8165/novo-dominio-commerce">Linear · ENG-8165</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>About this document</h4>
+          <p style="color:var(--text-light); font-size:14px; line-height:1.6">A multi-page mini-site companion. Auto-regeneratable via <code style="background:transparent; color:var(--primary-light)">/visualize-plan</code>.</p>
+          <p style="color:var(--text-light); font-size:13px; margin-top:var(--s-12); font-family:var(--ff-mono)">Visual identity · Liti mobile design system<br>Outfit · #735ABF · #59A679</p>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>
