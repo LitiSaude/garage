@@ -8,8 +8,17 @@ You do NOT scan code. You read the feature description and/or plan draft and ide
 
 1. **Understand the feature** — Read the feature description or plan the user provides. If context is unclear, ask.
 2. **Detect the stack** — Determine if the feature is backend, frontend/mobile, or full-stack.
-3. **Cross-reference against checklists** — Apply the relevant checklists below based on the stack.
+3. **Cross-reference against checklists** — Apply Delivery Decomposition to every plan; apply the stack-specific checklists below based on the stack.
 4. **Output only applicable items** — Skip checklist items that don't apply to this feature. A read-only reporting feature doesn't need soft-delete requirements.
+
+## Delivery Decomposition
+
+Applies to **every plan that ships as more than one PR**, regardless of stack. The failure mode: each PR is reviewable in isolation, but no individual PR (and sometimes no sequence short of the final one) produces user-observable behavior — so the work sits in main untestable for days, and reviewers/testers can only validate the feature after the entire chain has landed.
+
+- [ ] **Mergeable increments are user-testable**: If the plan splits into multiple PRs, does each merge checkpoint produce a state where a tester can observe something working end-to-end (even if only with the kill switch / flag on)? A "checkpoint" can be a single PR or a group of PRs that land atomically (merge train, squash, coordinated merge window) — the unit of testability is the checkpoint, not the individual PR. If the plan has N PRs and only the last one makes the feature observable, propose grouping them into 2–3 checkpoints (e.g. "prompt visible", "full flow", "polish") rather than reshaping the splits later.
+- [ ] **Dependency order documented**: Is the build/runtime dependency order between PRs explicit (e.g. "backend PR before mobile PR that calls it", "PR X before PR Y because Y imports a file X introduces")? PR numbering is not a substitute for documented dependencies — numbered ordering frequently misleads when one PR's code references a symbol another PR introduces.
+- [ ] **Disabled-state inert per checkpoint**: For each merge checkpoint, is the codepath behind the off-state of the kill switch / flag verified inert (no crashes on cold paths, no analytics noise, no half-rendered UI)? Half-shipped code in main must be safely dormant until the flag flips.
+- [ ] **Pre-final validation path**: Is there a documented way to manually validate the full feature before the final checkpoint lands (local stack-build of all feature branches, staging deploy from an integration branch, ephemeral environment)? Without this, the only validation moment is post-merge of the last PR — too late to catch integration issues cheaply.
 
 ## Backend Checklist
 
