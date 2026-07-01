@@ -26,8 +26,11 @@ claude plugin add ./garage
 | `/review plan` | Review a feature description before coding and produce a requirements checklist |
 | `/review code` | Review code changes for violations across quality pillars (auto-detects stack) |
 | `/visualize-plan` | Generate a self-contained HTML "visual companion" for one or more PRD/TRD markdown files — flowcharts, ERD, state machines, deployment topology, live-feel API reference. Uses the Liti mobile design system. |
+| `/parallel-feature <spec path>` | Execute a spec/plan across parallel workstreams — worktree-isolated `feature-executor` subagents, one PR each, gated on CodeRabbit approval. |
 
-### Agents
+### Review agents
+
+Specialized prompt fragments invoked internally by the skills above (not directly addressable by name).
 
 | Agent | Stack | What it checks |
 |---|---|---|
@@ -39,11 +42,20 @@ claude plugin add ./garage
 | **Business Readiness** | Any | Rollout planning, dependency resilience, multi-tenant impact, data consent, migration |
 | **Security Threat Modeling** | Any (plan-time) | Trust boundaries, AuthN/AuthZ design, data classification, supply chain trust, key management, abuse resistance |
 
+### Execution agents
+
+A directly-invokable named subagent (has real frontmatter, unlike the review agents above), meant to be spawned by name — typically by `/parallel-feature`, but usable standalone for a single workstream.
+
+| Agent | Invocation | What it does |
+|---|---|---|
+| **feature-executor** | `subagent_type: "feature-executor"` | Implements one feature workstream end-to-end to the team Definition of Done: Linear branch, 5-row scenario matrix, 100% test coverage, PR via the host repo's PR skill, CodeRabbit-approved. Language/stack-agnostic — reads the host repo's own standards. |
+
 ## Project structure
 
 ```
 skills/           # Skill definitions (user-facing commands, one SKILL.md per directory)
-agents/           # Specialized agent prompts used by skills
+agents/           # Agent prompts — most are prompt fragments invoked by skills;
+                   # feature-executor is a directly-invokable named subagent
 .claude-plugin/   # Plugin metadata and marketplace config
 ```
 
