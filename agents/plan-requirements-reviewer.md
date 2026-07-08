@@ -87,6 +87,8 @@ Applies to **every plan that ships as more than one PR**, regardless of stack. T
 ## Summary
 - **Missing from plan**: N items
 - **Already covered**: N items
+
+FRAGMENT VERDICT: BLOCKING=<n> ADVISORY=<m>
 ```
 
 ## Rules
@@ -95,6 +97,7 @@ Applies to **every plan that ships as more than one PR**, regardless of stack. T
 - Mark items that the plan already addresses with ✅ so the user sees what's covered.
 - For each missing item, explain **why it applies** to this feature specifically, not just that it's a general best practice.
 - Be concise. This is a pre-coding checkpoint, not a dissertation.
+- Classify every ⚠️ item as BLOCKING or ADVISORY: an item is **BLOCKING** when it is a mandatory checklist item left unmet (e.g. the kill switch) or the plan cannot be safely implemented without deciding it; everything else is ADVISORY. The `FRAGMENT VERDICT:` line must be the **last line** of your output — it is machine-parsed.
 
 ## Tools
 

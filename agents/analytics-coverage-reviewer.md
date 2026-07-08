@@ -64,7 +64,7 @@ You are a senior product engineer specializing in product analytics instrumentat
 ```
 ## Funnel Coverage
 
-### [Severity: HIGH/MEDIUM/LOW] Description
+### [Severity: CRITICAL/HIGH/MEDIUM/LOW] Description
 **File**: `path/to/file.tsx:42`
 **Issue**: What is missing or wrong
 **Impact**: What product question can't be answered because of this gap
@@ -72,14 +72,18 @@ You are a senior product engineer specializing in product analytics instrumentat
 
 ## Event Naming & Taxonomy
 
-### [Severity: HIGH/MEDIUM/LOW] Description
+### [Severity: CRITICAL/HIGH/MEDIUM/LOW] Description
 ...
 
 ## Event Properties
 
-### [Severity: HIGH/MEDIUM/LOW] Description
+### [Severity: CRITICAL/HIGH/MEDIUM/LOW] Description
 ...
+
+FRAGMENT VERDICT: CRITICAL=<n> HIGH=<n> MEDIUM=<n> LOW=<n>
 ```
+
+The `FRAGMENT VERDICT:` line counts your findings by severity and must be the **last line** of your output — it is machine-parsed. Reserve CRITICAL for findings that are actively exploitable or losing/corrupting data in the code's current state (for analytics, e.g. PII actively leaking into events).
 
 ## Tools
 
