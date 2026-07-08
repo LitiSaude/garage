@@ -14,7 +14,7 @@ Turn a markdown plan into a focused review surface — a multi-page mini-site fo
 
 ## When to use vs. NOT
 
-**Use when:** PRD/TRD has architecture, workflows, state machines, deployment topology, or REST APIs that read better as diagrams than ASCII; or a long markdown is hard to scan; or paired spec + impl-plan need joint navigation.
+**Use when:** PRD/TRD has architecture, workflows, state machines, deployment topology, or REST APIs that read better as diagrams than ASCII; or a long markdown is hard to scan; or paired spec + impl-plan need joint navigation. Briefs produced by `/brief` land in `docs/specs/` and are natural inputs — the typical slot is between `/brief` and `/parallel-feature`, giving stakeholders a readable view before execution starts.
 
 **Don't use for:** bug-fix tickets, pure SQL migrations, code reviews (use `/review code`).
 
