@@ -61,12 +61,12 @@ The exact skeleton `/brief` produces. Heading names and table columns are **pars
 
 **Review Gate** — written by `/brief` when the gate closes, never by hand. Contains the final review round's summary and ends with one machine-parsed line:
 
-```
+```text
 REVIEW GATE: PASSED | round=<n> | BLOCKING=0 | ADVISORY=<m>
 ```
 
 or, when the user explicitly waives residual blocking gaps:
 
-```
+```text
 REVIEW GATE: WAIVED | round=<n> | BLOCKING=<n> | user-approved
 ```

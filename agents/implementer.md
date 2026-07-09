@@ -31,7 +31,7 @@ If the spec is missing any of these and the code itself doesn't answer it, state
 
 ## What you return
 
-```
+```text
 IMPLEMENTER REPORT
 OBJECTIVE: [restated in one line]
 CHANGES: [file — one-line summary, per file]

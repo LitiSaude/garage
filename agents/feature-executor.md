@@ -43,7 +43,7 @@ You are NOT done until every one of these has happened, in this order:
 
 Reports are claims; evidence makes them checkable. Your final message is data for the orchestrator, not prose for a human:
 
-```
+```text
 EXECUTOR REPORT
 WORKSTREAM: [id/name, one line]
 PR: [url]

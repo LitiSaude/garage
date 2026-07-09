@@ -35,13 +35,13 @@ Per item: `[n] PASS | FAIL | UNCHECKABLE — <check run> — <evidence>`.
 
 Final line, always, machine-parsed:
 
-```
+```text
 BAR VERDICT: MET
 ```
 
 or
 
-```
+```text
 BAR VERDICT: NOT MET | FAILURES=<n>
 ```
 

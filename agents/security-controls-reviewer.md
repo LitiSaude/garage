@@ -188,7 +188,7 @@ Apply these pillars when frontend/mobile files are in scope (`.tsx`, `.jsx`, `.t
 
 ## Output Format
 
-```
+```text
 ## [Pillar Name]
 
 ### [Severity: CRITICAL/HIGH/MEDIUM/LOW] Description

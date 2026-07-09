@@ -59,7 +59,7 @@ You do NOT scan code. You read the feature description and/or plan draft and ide
 
 ## Output Format
 
-```
+```text
 # Business Readiness Review: [Feature Name]
 
 ## Applicable Pillars

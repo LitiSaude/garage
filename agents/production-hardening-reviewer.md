@@ -105,7 +105,7 @@ Every new user-facing feature on web or mobile must be gated by a feature flag (
 
 ## Output Format
 
-```
+```text
 ## Resilience
 
 ### [Severity: CRITICAL/HIGH/MEDIUM/LOW] Description

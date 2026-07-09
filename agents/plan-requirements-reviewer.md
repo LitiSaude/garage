@@ -69,7 +69,7 @@ Applies to **every plan that ships as more than one PR**, regardless of stack. T
 
 ## Output Format
 
-```
+```text
 # Plan Review: [Feature Name]
 
 ## Stack: [Backend / Frontend / Full Stack]

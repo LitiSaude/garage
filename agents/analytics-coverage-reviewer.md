@@ -61,7 +61,7 @@ You are a senior product engineer specializing in product analytics instrumentat
 
 ## Output Format
 
-```
+```text
 ## Funnel Coverage
 
 ### [Severity: CRITICAL/HIGH/MEDIUM/LOW] Description

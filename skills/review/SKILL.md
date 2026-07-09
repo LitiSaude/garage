@@ -71,7 +71,7 @@ These lines are consumed by `/brief` (review gate: loop until `BLOCKING=0`) and 
 
 ### Plan mode
 
-```
+```text
 # Plan Review: [Feature Name]
 
 ## Stack: [Backend / Frontend / Full Stack]
@@ -105,7 +105,7 @@ VERDICT: BLOCKING=<n> ADVISORY=<m>
 
 ### Code mode
 
-```
+```text
 # Code Review Report
 
 ## Stack: [Backend / Frontend / Full Stack]

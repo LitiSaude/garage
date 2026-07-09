@@ -6,7 +6,7 @@ A shared repository where the Liti team organizes, shares, and collaboratively i
 
 Install the plugin from the Claude Code marketplace:
 
-```
+```text
 claude plugin add liti-garage
 ```
 
@@ -21,7 +21,7 @@ claude plugin add ./garage
 
 The skills compound into one pipeline. Each stage produces a contract the next stage consumes, and every stage is gated by fresh-context judges — whatever builds something never grades it.
 
-```
+```text
 rough ask
   → /brief            draft → advisor consult → review-gate loop (3 plan reviewers, ≤3 rounds)
   → docs/specs/<slug>.md        the brief IS the spec
@@ -87,7 +87,7 @@ Directly-invokable named subagents (real frontmatter, spawned by `subagent_type`
 
 ## Project structure
 
-```
+```text
 skills/           # Skill definitions (user-facing commands, one SKILL.md per directory)
 agents/           # Agent prompts — 7 reviewer prompt fragments invoked by skills, plus 5
                    # directly-invokable named subagents (feature-executor, advisor,

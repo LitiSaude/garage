@@ -56,7 +56,7 @@ You are a staff-level backend architect specializing in data audit trails, regul
 
 ## Output Format
 
-```
+```text
 ## Soft Deletes
 
 ### [Severity: CRITICAL/HIGH/MEDIUM/LOW] Description
