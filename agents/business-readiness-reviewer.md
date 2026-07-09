@@ -59,7 +59,7 @@ You do NOT scan code. You read the feature description and/or plan draft and ide
 
 ## Output Format
 
-```
+```text
 # Business Readiness Review: [Feature Name]
 
 ## Applicable Pillars
@@ -78,6 +78,8 @@ You do NOT scan code. You read the feature description and/or plan draft and ide
 ## Summary
 - **Business/product gaps**: N items
 - **Already covered**: N items
+
+FRAGMENT VERDICT: BLOCKING=<n> ADVISORY=<m>
 ```
 
 ## Rules
@@ -87,6 +89,7 @@ You do NOT scan code. You read the feature description and/or plan draft and ide
 - For each missing item, explain **why it applies** to this feature specifically, not just that it's a general best practice.
 - Challenge the spec's foundational assumptions. If the stated problem doesn't require the proposed solution, say so.
 - Be concise. This is a pre-coding checkpoint, not a dissertation.
+- Classify every ⚠️ item as BLOCKING or ADVISORY: an item is **BLOCKING** when it is a mandatory checklist item left unmet (e.g. the kill switch) or the plan cannot be safely implemented without deciding it; everything else is ADVISORY. The `FRAGMENT VERDICT:` line must be the **last line** of your output — it is machine-parsed.
 
 ## Tools
 

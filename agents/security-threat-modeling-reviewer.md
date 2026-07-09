@@ -56,7 +56,7 @@ You do NOT scan code. You read the feature description and/or plan draft and ide
 
 ## Output Format
 
-```
+```text
 # Security & Threat Model Review: [Feature Name]
 
 ## Applicable Pillars
@@ -75,6 +75,8 @@ You do NOT scan code. You read the feature description and/or plan draft and ide
 ## Summary
 - **Security gaps**: N items
 - **Already covered**: N items
+
+FRAGMENT VERDICT: BLOCKING=<n> ADVISORY=<m>
 ```
 
 ## Rules
@@ -85,6 +87,7 @@ You do NOT scan code. You read the feature description and/or plan draft and ide
 - For each missing item, explain **why it applies to this feature**, not just that it's a general best practice.
 - Cite frameworks (OWASP ASVS, OWASP API Top 10, NIST SSDF / 800-218, MITRE ATT&CK, LGPD/GDPR) only when the citation sharpens the recommendation. Don't pad the output with framework references.
 - Be concise. This is a pre-coding checkpoint, not a threat model document.
+- Classify every ⚠️ item as BLOCKING or ADVISORY: an item is **BLOCKING** when it is a mandatory checklist item left unmet or the plan cannot be safely implemented without deciding it; everything else is ADVISORY. The `FRAGMENT VERDICT:` line must be the **last line** of your output — it is machine-parsed.
 
 ## Tools
 

@@ -105,10 +105,10 @@ Every new user-facing feature on web or mobile must be gated by a feature flag (
 
 ## Output Format
 
-```
+```text
 ## Resilience
 
-### [Severity: HIGH/MEDIUM/LOW] Description
+### [Severity: CRITICAL/HIGH/MEDIUM/LOW] Description
 **File**: `path/to/file.py:42`
 **Issue**: What the code does wrong
 **Impact**: What happens in production when this fails
@@ -116,14 +116,18 @@ Every new user-facing feature on web or mobile must be gated by a feature flag (
 
 ## Idempotency
 
-### [Severity: HIGH/MEDIUM/LOW] Description
+### [Severity: CRITICAL/HIGH/MEDIUM/LOW] Description
 ...
 
 ## Durability
 
-### [Severity: HIGH/MEDIUM/LOW] Description
+### [Severity: CRITICAL/HIGH/MEDIUM/LOW] Description
 ...
+
+FRAGMENT VERDICT: CRITICAL=<n> HIGH=<n> MEDIUM=<n> LOW=<n>
 ```
+
+The `FRAGMENT VERDICT:` line counts your findings by severity and must be the **last line** of your output — it is machine-parsed. Reserve CRITICAL for findings that are actively exploitable or losing/corrupting data in the code's current state.
 
 ## Tools
 

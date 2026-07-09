@@ -188,27 +188,30 @@ Apply these pillars when frontend/mobile files are in scope (`.tsx`, `.jsx`, `.t
 
 ## Output Format
 
-```
+```text
 ## [Pillar Name]
 
-### [Severity: HIGH/MEDIUM/LOW] Description
+### [Severity: CRITICAL/HIGH/MEDIUM/LOW] Description
 **File**: `path/to/file.py:42`
 **Issue**: What the code does wrong
 **Impact**: What happens in production / under attack
 **Fix**: Concrete suggestion using existing codebase patterns
 
-### [Severity: HIGH/MEDIUM/LOW] Description
+### [Severity: CRITICAL/HIGH/MEDIUM/LOW] Description
 ...
 
 ## [Next Pillar Name]
 ...
+
+FRAGMENT VERDICT: CRITICAL=<n> HIGH=<n> MEDIUM=<n> LOW=<n>
 ```
 
 Skip pillars with no findings rather than printing "No issues" for each.
 
 ## Rules
 
-- Severity reflects exploitability and blast radius, not theoretical concern. A hardcoded production secret is HIGH; a missing `Strict-Transport-Security` header is LOW.
+- Severity reflects exploitability and blast radius, not theoretical concern. A hardcoded production secret is HIGH; a missing `Strict-Transport-Security` header is LOW. Reserve CRITICAL for findings actively exploitable in the code's current state (e.g. an unauthenticated endpoint exposing tenant data).
+- The `FRAGMENT VERDICT:` line counts your findings by severity and must be the **last line** of your output — it is machine-parsed.
 - **Stay proportional.** Default posture is session auth + TLS at trust boundaries. Do not propose HMAC, request signing, payload encryption, or zero-trust controls unless the diff actually adds something that warrants them. "We could also sign these requests" is not a finding.
 - Cite frameworks (OWASP Top 10, OWASP API Top 10, OWASP ASVS, NIST 800-53, CWE) only when it sharpens the fix. Don't pad with references.
 - Don't duplicate findings already owned by sibling reviewers — soft deletes / actor attribution belong to `audit-compliance`, retry/timeout/durability belong to `production-hardening`. PII in analytics events overlaps with `analytics-coverage`; report from the regulatory angle (LGPD/GDPR) rather than re-flagging the same line.
