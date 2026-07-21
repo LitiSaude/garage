@@ -53,6 +53,7 @@ The compounding map: `/brief` reuses `/review plan`'s reviewer fragments as its 
 | Skill | Description |
 |---|---|
 | `/brief <rough ask>` | Turn a rough ask into a review-gated brief at `docs/specs/<slug>.md` — goal, house rules, measurable Done Bar, workstream specs, user-testable merge checkpoints. The harness's contract artifact. |
+| `spec-writing` | Prose + precision standard for any spec/brief/design doc: ASD-STE100 Simplified Technical English rules for the sentences, a "spec is code" precision bar for the content (four-questions rule, contract tables, Given/When/Then acceptance, ambiguity audit). Composes with `/brief`: brief template governs structure, spec-writing governs prose. |
 | `/review plan [<path>]` | Review a feature description (or a plan file) before coding and produce a requirements checklist ending in a machine-parsed verdict |
 | `/review code` | Review code changes for violations across quality pillars (auto-detects stack), verdict line included |
 | `/visualize-plan` | Generate a self-contained HTML "visual companion" for one or more PRD/TRD markdown files — flowcharts, ERD, state machines, deployment topology, live-feel API reference. Uses the Liti mobile design system. |
