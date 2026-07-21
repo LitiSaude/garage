@@ -98,7 +98,41 @@ agents/           # Agent prompts — 7 reviewer prompt fragments invoked by ski
 
 ## Contributing
 
-Add new skills to `skills/` and new agents to `agents/`. Open a PR so the team can review and iterate together.
+Add new skills to `skills/` and new agents to `agents/`. Open a PR so the team can review and iterate together. Every PR that changes a skill or agent must add a line to `CHANGELOG.md` under the current unreleased heading — and if the change should reach the team immediately, the same PR must also perform the release steps below.
+
+## Versioning & releases
+
+The plugin version lives in **two manifests that must always carry the same number**:
+
+- `.claude-plugin/plugin.json` → `version`
+- `.claude-plugin/marketplace.json` → `plugins[0].version`
+
+The Claude Code marketplace only redistributes the plugin when this version number changes. **A skill merged to `main` without a version bump is invisible to the team** — the marketplace keeps serving the last released version, no matter what `main` contains. This has bitten us before; don't let a "done" PR silently ship nothing.
+
+### Semver — which part to bump
+
+We follow [semantic versioning](https://semver.org) (`MAJOR.MINOR.PATCH`), interpreted for a plugin whose public API is its skills, agents, and the contracts between them:
+
+| Bump | When | Examples |
+|---|---|---|
+| **MAJOR** (`2.0.0`) | Breaking: existing usage stops working or means something different | Skill/agent renamed or removed; invocation arguments changed; verdict grammar or report formats that other skills parse changed incompatibly |
+| **MINOR** (`1.8.0`) | Additive: new capability, nothing existing breaks | New skill or agent; new reference file, mode, or optional argument on an existing one |
+| **PATCH** (`1.7.1`) | Fixes only: no new surface | Prompt corrections, typo/docs fixes, tightening an existing behavior |
+
+When a batch mixes change types, the largest one wins (one new skill + three fixes → MINOR).
+
+### Release workflow
+
+Work accumulates; manifests only move when a release ships:
+
+1. **During development** — manifests stay at the last released version. Each PR logs its change in `CHANGELOG.md` under a `## X.Y.Z (unreleased)` heading (create it if it doesn't exist, picking the version per the table above; upgrade the heading in place if a later change in the batch warrants a bigger bump).
+2. **To release** (its own small PR, or folded into the batch's final PR):
+   - Retitle the changelog heading: `## X.Y.Z (unreleased)` → `## X.Y.Z — YYYY-MM-DD`
+   - Set `version` to `X.Y.Z` in **both** `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`
+   - Verify they match: `grep '"version"' .claude-plugin/*.json` must print the same number twice
+3. **After merge** — teammates receive the update on their next marketplace refresh (`claude plugin update liti-garage`).
+
+Rule of thumb before merging any PR: *if a teammate ran `claude plugin update` right after this merge, would they get what I just built?* If the answer is no and it should be yes, the version bump belongs in this PR.
 
 ## Credits
 
