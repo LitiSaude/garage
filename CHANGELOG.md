@@ -6,6 +6,7 @@ Manifests (`.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`) stay
 
 The development harness: garage's skills now compound into one pipeline — each stage produces a contract the next consumes, gated by fresh-context judges.
 
+- **`spec-writing` skill** — STE prose + "spec is code" precision for any spec/brief/design doc: 16 ASD-STE100 rules adapted for specs (`reference/ste-rules.md`), a precision bar per section (four-questions rule, contract/transition tables, Given/When/Then acceptance, ambiguity audit, spec-complete checklist in `reference/spec-template.md`), and a real before/after example. Composes with `/brief`: brief template governs structure, spec-writing governs prose and precision.
 - **`/brief` skill** — rough ask → review-gated brief at `docs/specs/<slug>.md` (goal, house rules, measurable Done Bar, 5-part workstream specs, user-testable merge checkpoints). Advisor consult before the gate; loops the plan reviewers until `BLOCKING=0` (≤3 rounds, then the user resolves or waives).
 - **`orchestration` skill** — architect-as-orchestrator routing doctrine: implementer/opus/codex/feature-executor lanes, 5-part spec contract, cost discipline, loop-until-bar posture. Adapted from fable-advisor v2.1.0 (MIT, Dan McAteer).
 - **New agents** — `advisor` (Fable-pinned commitment-boundary skeptic), `implementer` (Sonnet lane, Opus escalation), `codex-implementer` (GPT-5.5 via Codex CLI, loud failure), all vendored from fable-advisor v2.1.0; `bar-judge` (fresh-context adversarial Done Bar judge, new).
