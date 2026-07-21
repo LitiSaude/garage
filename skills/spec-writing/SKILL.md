@@ -16,7 +16,6 @@ The two layers are orthogonal and both required: STE governs *how sentences are 
 
 1. **[`reference/ste-rules.md`](reference/ste-rules.md)** — 16 STE rules adapted for spec prose, with ✗/✓ examples and an anti-pattern table. Apply to every sentence as you write, not as a cleanup pass.
 2. **[`reference/spec-template.md`](reference/spec-template.md)** — section skeleton and the precision bar per section (four-questions rule, contract tables, transition tables, Given/When/Then acceptance criteria, ambiguity audit, spec-complete checklist).
-3. **[`examples/before-after.md`](examples/before-after.md)** — a real section from a production spec, before and after, with a rule-by-rule annotation of what changed. Read it once; it calibrates faster than the rules do.
 
 ## Workflow
 
