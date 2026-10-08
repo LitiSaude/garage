@@ -2,6 +2,12 @@
 
 Manifests (`.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`) stay at the last released version until a release ships; unreleased work accumulates here.
 
+## Unreleased
+
+- **`/review`** — reviewer prompt fragments move from `agents/` to `skills/review/reviewers/` and are referenced skill-relative, so they resolve when the plugin runs in a host repo (the old `@agents/...` paths resolved against the host repo's cwd). Code mode with no files given now reviews the whole branch plus uncommitted work instead of only `HEAD~1`.
+- **`/parallel-feature`** — drops the `/batch` leaf-tactic allowance (subagents can't spawn workers); stops and asks when Linear is unavailable.
+- **Skill routing** — `review`, `parallel-feature`, and `visualize-plan` descriptions gain USE WHEN triggers; cross-skill references use the `liti-garage:` namespace and skill-relative paths.
+
 ## 1.7.0 — 2026-07-21
 
 The development harness: garage's skills now compound into one pipeline — each stage produces a contract the next consumes, gated by fresh-context judges.

@@ -1,11 +1,11 @@
 ---
 name: review
-description: Composite review — fan out reviewer agents over a plan (requirements checklist) or code changes (violation report), merge into a single report with a machine-parsed VERDICT line.
+description: Composite review — fan out reviewer agents over a plan (requirements checklist) or code changes (violation report), merge into a single report with a machine-parsed VERDICT line. USE WHEN the user asks to review a plan, brief, or feature description before coding; asks for a production/security/audit/analytics review of code changes; or when `/brief` or `/parallel-feature` reaches its review gate.
 ---
 
 # /review — Composite Code Review
 
-Run the appropriate reviewer agents based on the mode and stack.
+Run the appropriate reviewer agents based on the mode and stack. The reviewer prompts live in this skill's `reviewers/` directory; paths below are relative to this skill's base directory, never to the host repo.
 
 ## Usage
 
@@ -18,14 +18,14 @@ Run the appropriate reviewer agents based on the mode and stack.
 
 **When**: Before coding starts. The user has a feature description or plan draft.
 
-**What it does**: Launches three agents in parallel — one for engineering standards (`@agents/plan-requirements-reviewer.md`), one for business/product readiness (`@agents/business-readiness-reviewer.md`), and one for security & threat modeling (`@agents/security-threat-modeling-reviewer.md`). Together they produce a comprehensive review covering technical requirements, business blind spots, and design-level security gaps. No code scanning.
+**What it does**: Launches three agents in parallel — one for engineering standards (`reviewers/plan-requirements-reviewer.md`), one for business/product readiness (`reviewers/business-readiness-reviewer.md`), and one for security & threat modeling (`reviewers/security-threat-modeling-reviewer.md`). Together they produce a comprehensive review covering technical requirements, business blind spots, and design-level security gaps. No code scanning.
 
 **Behavior**:
 1. Locate the plan. If a `<path>` argument was given, the plan is that file — do not paste its contents into the reviewer prompts; instead append to each reviewer prompt: "The plan to review is at `<path>` — read it with the Read tool." (Reviewers reading the file themselves stay fresh-context; a pasted summary would carry this session's framing.) If no path was given, read the user's feature description or plan draft from context and include it in the prompts.
-2. Launch three Task agents **in parallel** with `subagent_type: "general-purpose"`:
-   - One with the prompt from `@agents/plan-requirements-reviewer.md` (engineering standards)
-   - One with the prompt from `@agents/business-readiness-reviewer.md` (business/product readiness)
-   - One with the prompt from `@agents/security-threat-modeling-reviewer.md` (security & threat modeling)
+2. Launch three Agent-tool subagents **in parallel** with `subagent_type: "general-purpose"`:
+   - One with the prompt from `reviewers/plan-requirements-reviewer.md` (engineering standards)
+   - One with the prompt from `reviewers/business-readiness-reviewer.md` (business/product readiness)
+   - One with the prompt from `reviewers/security-threat-modeling-reviewer.md` (security & threat modeling)
 3. Merge results into a single report ending with the merged `VERDICT:` line (see Verdict lines below).
 
 ## Mode: `code`
@@ -35,24 +35,24 @@ Run the appropriate reviewer agents based on the mode and stack.
 **What it does**: Launches specialized reviewer agents in parallel to scan actual code for violations.
 
 **Behavior**:
-1. **Determine scope**: Look at the files the user wants reviewed. If no files are specified, use recent git changes (`git diff --name-only HEAD~1`).
+1. **Determine scope**: Look at the files the user wants reviewed. If no files are specified, review everything on the current branch plus uncommitted work: `git diff --name-only $(git merge-base HEAD origin/HEAD)` (fall back to `main` if `origin/HEAD` is unset) combined with `git diff --name-only HEAD` and untracked files from `git status --porcelain`.
 
 2. **Detect stack** (if not explicitly provided):
    - Backend indicators: `.py`, `.go`, `.java`, `.rs` files, `models/`, `api/`, `services/`, `domains/`, `background_jobs/`
    - Frontend/mobile indicators: `.tsx`, `.jsx`, `.ts`, `.js`, `.swift`, `.kt`, `.dart` files, `components/`, `screens/`, `pages/`, `hooks/`
    - If mixed, run all relevant reviewers.
 
-3. **Launch reviewers in parallel** using the Task tool with `subagent_type: "general-purpose"`:
+3. **Launch reviewers in parallel** using the Agent tool with `subagent_type: "general-purpose"`:
 
    **For backend code**, launch three parallel agents:
-   - One with the prompt from `@agents/production-hardening-reviewer.md` scoped to the target files
-   - One with the prompt from `@agents/audit-compliance-reviewer.md` scoped to the target files
-   - One with the prompt from `@agents/security-controls-reviewer.md` scoped to the target backend files (backend pillars only)
+   - One with the prompt from `reviewers/production-hardening-reviewer.md` scoped to the target files
+   - One with the prompt from `reviewers/audit-compliance-reviewer.md` scoped to the target files
+   - One with the prompt from `reviewers/security-controls-reviewer.md` scoped to the target backend files (backend pillars only)
 
    **For frontend/mobile code**, launch three parallel agents:
-   - One with the prompt from `@agents/production-hardening-reviewer.md` scoped to the target frontend files (frontend pillars only — kill switch, client resilience)
-   - One with the prompt from `@agents/analytics-coverage-reviewer.md` scoped to the target files
-   - One with the prompt from `@agents/security-controls-reviewer.md` scoped to the target frontend files (frontend pillars only)
+   - One with the prompt from `reviewers/production-hardening-reviewer.md` scoped to the target frontend files (frontend pillars only — kill switch, client resilience)
+   - One with the prompt from `reviewers/analytics-coverage-reviewer.md` scoped to the target files
+   - One with the prompt from `reviewers/security-controls-reviewer.md` scoped to the target frontend files (frontend pillars only)
 
    **For mixed stack**, launch all four agents — a single `production-hardening` invocation covering both stacks, `audit-compliance`, `analytics-coverage`, and a single `security-controls-reviewer` invocation that covers both backend and frontend pillars across the full file scope.
 

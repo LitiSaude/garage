@@ -1,6 +1,6 @@
 ---
 name: visualize-plan
-description: Generate a "visual companion" for one or more PRD/TRD markdown files. Long specs become a multi-page mini-site with a sticky side menu (folder of self-contained HTML files); short specs become a single-page HTML. Both follow the Liti mobile design system and a fixed page-shell template so visuals stay consistent across the team.
+description: Generate a "visual companion" for one or more PRD/TRD markdown files. Long specs become a multi-page mini-site with a sticky side menu (folder of self-contained HTML files); short specs become a single-page HTML. Both follow the Liti mobile design system and a fixed page-shell template so visuals stay consistent across the team. USE WHEN the user asks to visualize a plan/PRD/TRD/brief, wants a "visual companion" or stakeholder-readable HTML view of a spec, or after a gated `/brief` before `/parallel-feature`. Not for bug-fix tickets, pure SQL migrations, or code reviews.
 ---
 
 # /visualize-plan — Visual Companion for PRD/TRD Markdown
@@ -10,13 +10,13 @@ Turn a markdown plan into a focused review surface — a multi-page mini-site fo
 ## Usage
 
 - `/visualize-plan <path-to-md> [<path-to-md> ...]` — explicit input(s).
-- `/visualize-plan` — no args: scan `docs/specs/**/*.md` from the current branch's diff against `main` and ask the user which to include.
+- `/visualize-plan` — no args: scan `docs/specs/**/*.md` from the current branch's diff against the default branch (`git merge-base HEAD origin/HEAD`; fall back to `main`) and ask the user which to include.
 
 ## When to use vs. NOT
 
 **Use when:** PRD/TRD has architecture, workflows, state machines, deployment topology, or REST APIs that read better as diagrams than ASCII; or a long markdown is hard to scan; or paired spec + impl-plan need joint navigation. Briefs produced by `/brief` land in `docs/specs/` and are natural inputs — the typical slot is between `/brief` and `/parallel-feature`, giving stakeholders a readable view before execution starts.
 
-**Don't use for:** bug-fix tickets, pure SQL migrations, code reviews (use `/review code`).
+**Don't use for:** bug-fix tickets, pure SQL migrations, code reviews (use `/liti-garage:review code`).
 
 ## Output mode — pick by content
 
