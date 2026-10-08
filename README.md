@@ -90,9 +90,9 @@ Directly-invokable named subagents (real frontmatter, spawned by `subagent_type`
 
 ```text
 skills/           # Skill definitions (user-facing commands, one SKILL.md per directory)
-agents/           # Agent prompts — 7 reviewer prompt fragments invoked by skills, plus 5
-                   # directly-invokable named subagents (feature-executor, advisor,
+agents/           # 5 directly-invokable named subagents (feature-executor, advisor,
                    # implementer, codex-implementer, bar-judge)
+skills/review/reviewers/  # 7 reviewer prompt fragments the review skill fans out
 .claude-plugin/   # Plugin metadata and marketplace config
 ```
 

@@ -17,7 +17,7 @@ The brief is the harness's contract artifact: everything downstream — `/visual
 
 3. **Advisor consult — before the review gate.** Spawn the `advisor` agent (`subagent_type: "advisor"`) with the architecture decisions the brief commits to, the constraints, and the options you considered. Act on the verdict or surface the disagreement to the user — never silently ignore it. This happens *before* the review loop so a restructure can't invalidate a passed gate.
 
-4. **Review-gate loop.** Run `/review plan docs/specs/<slug>.md` — the review skill's plan mode with the path argument, which fans out the three plan reviewers as fresh-context subagents that read the file themselves. Then:
+4. **Review-gate loop.** Run `/liti-garage:review plan docs/specs/<slug>.md` — the review skill's plan mode with the path argument, which fans out the three plan reviewers as fresh-context subagents that read the file themselves. Then:
    - The gate passes when the merged `VERDICT:` line shows `BLOCKING=0`. The verdict is the **arithmetic sum of the fragments' `FRAGMENT VERDICT:` lines** — you drafted this brief, so you don't get to re-judge the numbers.
    - `BLOCKING>0` → fix the draft (address or explicitly incorporate each blocking item) and re-run the review. **Maximum 3 rounds.**
    - Still blocking after round 3 → present the residual items to the user: they resolve them with you, or explicitly waive them.
@@ -27,9 +27,9 @@ The brief is the harness's contract artifact: everything downstream — `/visual
 6. **Re-consult the advisor only if** a review round restructured the workstream graph (added/removed/re-wired workstreams) — once, max. Two advisor calls per `/brief` run is the ceiling.
 
 7. **Hand off.** Tell the user the brief is gated and offer the next stage:
-   - `/visualize-plan docs/specs/<slug>.md` — optional stakeholder-readable companion (the no-arg mode also picks briefs up from `docs/specs/`).
-   - Posture `routed-build` → `/parallel-feature docs/specs/<slug>.md`.
-   - Posture `loop` → the orchestration skill's loop posture (`skills/orchestration/SKILL.md`), driving lanes against the Done Bar with `bar-judge`.
+   - `/liti-garage:visualize-plan docs/specs/<slug>.md` — optional stakeholder-readable companion (the no-arg mode also picks briefs up from `docs/specs/`).
+   - Posture `routed-build` → `/liti-garage:parallel-feature docs/specs/<slug>.md`.
+   - Posture `loop` → the orchestration skill's loop posture (`../orchestration/SKILL.md`, relative to this skill's base directory), driving lanes against the Done Bar with `bar-judge`.
 
 ## Rules
 
