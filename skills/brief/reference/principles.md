@@ -12,7 +12,7 @@ Dictating steps overrides the model's judgment with yours, and yours is usually 
 
 An underspecified goal is safe when fenced by a few rules that must always hold — the things you care about no matter how the goal is reached. Classic example: don't hard-code special cases into an agent; describe the behavior in its prompt and let it reason.
 
-**In the harness**: a brief's `## House Rules` travel **verbatim** into every spawn prompt downstream (`feature-executor`, `implementer` lanes), so no worker ever acts outside them.
+**In the harness**: a brief's `## House Rules` travel **verbatim** into every spawn prompt downstream (`feature-executor` workstreams, and any worker the session briefs directly), so no worker ever acts outside them.
 
 ## 3. Give it a real bar for "done"
 
@@ -24,7 +24,7 @@ Adjectives ("high quality") let the model stop at its own idea of good enough. R
 
 Once there's a bar, iterate against it: build, check, find the biggest gap, close it, go again. The builder never gets to decide it's finished — the loop ends when the bar is met or a human says stop.
 
-**In the harness**: `/brief`'s review-gate loop re-drafts until reviewers report `BLOCKING=0` (≤3 rounds, then the user decides); the orchestration skill's loop posture cycles lane → `bar-judge` until `BAR VERDICT: MET` (≤3 cycles, then advisor, then the user).
+**In the harness**: `/brief`'s review-gate loop re-drafts until reviewers report `BLOCKING=0` (≤3 rounds, then the user decides); the orchestration skill's loop posture cycles build → `bar-judge` until `BAR VERDICT: MET` (≤3 cycles, then advisor, then the user).
 
 ## 5. The builder never grades its own work
 

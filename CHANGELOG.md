@@ -2,8 +2,14 @@
 
 Manifests (`.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`) stay at the last released version until a release ships; unreleased work accumulates here.
 
-## Unreleased
+## 2.0.0 (unreleased)
 
+Breaking: two agents are removed. Anything that spawns `implementer` or `codex-implementer` by name stops working.
+
+- **Removed `implementer` and `codex-implementer` agents.** They were vendored from fable-advisor v2.1.0 and had fallen five major versions behind upstream. Claude Code's Agent tool now takes model and effort per call, so the session delegates through the built-in general-purpose subagent instead. For a second model family, use the OpenAI Codex plugin (`codex@openai-codex`: `/codex:adversarial-review`, `/codex:rescue`).
+- **`orchestration` skill rewritten.** The standing rules to delegate ("should almost never type implementation code", the lanes table) are replaced with what delegation costs and when it pays, following upstream's v7.3.0 rewrite and its measurements. The five-part spec, the evidence checks, the `advisor` consult points, and the loop posture stay. The loop posture now reads build ⇄ `bar-judge`: the session builds or delegates as it judges best, and the judge still decides when the bar is met.
+- **Migration:** replace `subagent_type: "implementer"` with a general-purpose subagent call that passes `model` (for example `sonnet`) and carries the five-part spec. `/brief`, `/parallel-feature`, `feature-executor`, `advisor`, and `bar-judge` are unchanged.
+- **Docs** — README, `skills/brief/SKILL.md`, and `skills/brief/reference/principles.md` no longer reference implementer lanes.
 - **`/review`** — reviewer prompt fragments move from `agents/` to `skills/review/reviewers/` and are referenced skill-relative, so they resolve when the plugin runs in a host repo (the old `@agents/...` paths resolved against the host repo's cwd). Code mode with no files given now reviews the whole branch plus uncommitted work instead of only `HEAD~1`.
 - **`/parallel-feature`** — drops the `/batch` leaf-tactic allowance (subagents can't spawn workers); stops and asks when Linear is unavailable.
 - **Skill routing** — `review`, `parallel-feature`, and `visualize-plan` descriptions gain USE WHEN triggers; cross-skill references use the `liti-garage:` namespace and skill-relative paths.

@@ -29,7 +29,7 @@ The brief is the harness's contract artifact: everything downstream — `/visual
 7. **Hand off.** Tell the user the brief is gated and offer the next stage:
    - `/liti-garage:visualize-plan docs/specs/<slug>.md` — optional stakeholder-readable companion (the no-arg mode also picks briefs up from `docs/specs/`).
    - Posture `routed-build` → `/liti-garage:parallel-feature docs/specs/<slug>.md`.
-   - Posture `loop` → the orchestration skill's loop posture (`../orchestration/SKILL.md`, relative to this skill's base directory), driving lanes against the Done Bar with `bar-judge`.
+   - Posture `loop` → the orchestration skill's loop posture (`../orchestration/SKILL.md`, relative to this skill's base directory), building against the Done Bar with `bar-judge` as the judge.
 
 ## Rules
 
