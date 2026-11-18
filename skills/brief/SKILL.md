@@ -15,9 +15,9 @@ The brief is the harness's contract artifact: everything downstream — `/visual
 
 2. **Draft.** Read [`reference/template.md`](reference/template.md) and produce the brief at `docs/specs/<kebab-slug>.md` in the host repo (create the directory if missing; if the repo already keeps specs elsewhere by convention, follow the repo). Every section honors its contract paragraph in the template — most importantly: Goal is an outcome, House Rules are context-free, every Done Bar item is checkable, every Merge Checkpoint is user-testable end-to-end.
 
-3. **Advisor consult — before the review gate.** Spawn the `advisor` agent (`subagent_type: "advisor"`) with the architecture decisions the brief commits to, the constraints, and the options you considered. Act on the verdict or surface the disagreement to the user — never silently ignore it. This happens *before* the review loop so a restructure can't invalidate a passed gate.
+3. **Advisor consult — before the review gate.** Spawn the `advisor` agent (`subagent_type: "liti-garage:advisor"`) with the architecture decisions the brief commits to, the constraints, and the options you considered. Act on the verdict or surface the disagreement to the user — never silently ignore it. This happens *before* the review loop so a restructure can't invalidate a passed gate.
 
-4. **Review-gate loop.** Run `/review plan docs/specs/<slug>.md` — the review skill's plan mode with the path argument, which fans out the three plan reviewers as fresh-context subagents that read the file themselves. Then:
+4. **Review-gate loop.** Run `/liti-garage:review plan docs/specs/<slug>.md` — the review skill's plan mode with the path argument, which fans out the three plan reviewers as fresh-context subagents that read the file themselves. Then:
    - The gate passes when the merged `VERDICT:` line shows `BLOCKING=0`. The verdict is the **arithmetic sum of the fragments' `FRAGMENT VERDICT:` lines** — you drafted this brief, so you don't get to re-judge the numbers.
    - `BLOCKING>0` → fix the draft (address or explicitly incorporate each blocking item) and re-run the review. **Maximum 3 rounds.**
    - Still blocking after round 3 → present the residual items to the user: they resolve them with you, or explicitly waive them.
@@ -27,13 +27,13 @@ The brief is the harness's contract artifact: everything downstream — `/visual
 6. **Re-consult the advisor only if** a review round restructured the workstream graph (added/removed/re-wired workstreams) — once, max. Two advisor calls per `/brief` run is the ceiling.
 
 7. **Hand off.** Tell the user the brief is gated and offer the next stage:
-   - `/visualize-plan docs/specs/<slug>.md` — optional stakeholder-readable companion (the no-arg mode also picks briefs up from `docs/specs/`).
-   - Posture `routed-build` → `/parallel-feature docs/specs/<slug>.md`.
-   - Posture `loop` → the orchestration skill's loop posture (`skills/orchestration/SKILL.md`), building against the Done Bar with `bar-judge` as the judge.
+   - `/liti-garage:visualize-plan docs/specs/<slug>.md` — optional stakeholder-readable companion (the no-arg mode also picks briefs up from `docs/specs/`).
+   - Posture `routed-build` → `/liti-garage:parallel-feature docs/specs/<slug>.md`.
+   - Posture `loop` → the `liti-garage:orchestration` skill's loop posture, building against the Done Bar with `bar-judge` as the judge.
 
 ## Rules
 
-- **Never instruct a subagent to run `/review`** or to spawn other agents — subagents can't nest. All fan-out happens from this session, exactly as the review skill does it.
+- **Run every fan-out from this session**, exactly as the review skill does it. Do not ask a subagent to run `/liti-garage:review` or to spawn reviewers of its own: a nested fan-out hands you back a summary, and the gate needs each reviewer's own `FRAGMENT VERDICT:` line to sum.
 - The gate is arithmetic. If a fragment's counts look wrong, re-run that reviewer; don't override the number.
 - Goal over steps: if you catch yourself writing implementation sequence into the Goal or the Objectives, move the *what* into the spec fields and delete the *how*.
 - Repo-relative paths only inside the brief — it's a shared artifact; absolute or machine-specific paths break it for everyone else.
