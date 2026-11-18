@@ -1,85 +1,99 @@
 ---
 name: orchestration
-description: Routing doctrine for the architect-as-orchestrator pattern — how a session running the smartest model delegates implementation to cheaper, cross-vendor, or workstream lanes to minimize cost while gating quality with fresh-context judges. USE WHEN delegating implementation work, choosing between implementer/codex-implementer/feature-executor lanes, escalating a subagent to opus, writing a spec for a subagent, deciding whether to consult advisor, running the loop-until-bar posture, or managing session cost on any multi-task build where the session is the architect.
+description: How the session decides whether to delegate a piece of implementation to a subagent or do it itself, how to brief a worker that shares none of the conversation (the five-part spec), how to check what comes back, when to consult `advisor`, and how to run the loop-until-bar posture. USE WHEN deciding whether to delegate implementation, picking a model or effort for a worker, writing a prompt for a worker subagent, checking a subagent's report, deciding whether to consult advisor, or executing a brief marked `Posture: loop`.
 ---
 
-<!-- Adapted from fable-advisor v2.1.0 (https://github.com/DannyMac180/fable-advisor) by Dan McAteer, MIT License. Garage adaptations: workstream + adversarial-check lanes, lane boundary vs /parallel-feature, loop-until-bar posture. -->
+<!-- Adapted from fable-advisor (https://github.com/DannyMac180/fable-advisor) by Dan McAteer, MIT License. Originally vendored from v2.1.0; the delegation guidance follows the v7.3.0 rewrite. Garage adaptations: no dedicated implementer agents, workstream boundary vs /parallel-feature, loop-until-bar posture with bar-judge. -->
 
-# Orchestration — the architect's routing doctrine
+# Orchestration — delegating, briefing, and judging work
 
-The session is the architect: it owns requirements, architecture, decomposition, specs, routing, and verification. It should almost never type implementation code. Every implementation task gets routed to the cheapest lane that is adequate for it — escalation is deliberate, per task, never a fixed binding.
+The session owns the requirements, the design, the specs, and the judgment of evidence. Whether it also writes a given piece of code, or hands that piece to a subagent, is a call it makes from the costs below. Neither is the default.
 
-The principles behind this doctrine live in [`../brief/reference/principles.md`](../brief/reference/principles.md).
+Garage ships no implementer agent. When you delegate implementation, use Claude Code's built-in general-purpose subagent through the Agent tool, and choose the model and effort on the call.
 
-## Cost discipline — the prime directive
+The principles behind the harness are in [`../brief/reference/principles.md`](../brief/reference/principles.md).
 
-The session model is the most expensive lane in the system, on both input and output tokens. The whole economic case for this pattern is keeping its token volume low: spend the top model on judgment, spend cheap models on volume. Three rules follow.
+## What delegation costs, and when it pays
 
-**Emit judgment, not volume.** The architect's output is decomposition, specs, routing decisions, verdicts on diffs, and short reports. It does not type implementation code, test bodies, boilerplate, or config files. A code block longer than an interface signature or a few illustrative lines is a spec that hasn't been delegated yet — stop and delegate it. Fixing an implementer's bug by hand is the same failure in disguise: send a corrected spec back to the cheap lane instead.
+- **A worker starts from nothing.** It re-reads the files it needs. You pay session-model prices to write its brief and to read its report and diff.
+- **Delegation does not make the answer better.** A subagent runs the same model as the session or a smaller one. A fresh context helps for review, because the reviewer has not seen your reasoning. It does not help for building.
+- **Judge by cost per finished, verified task.** A cheap call that comes back wrong and needs a second round can cost more than doing the work yourself.
+- **Measured upstream.** fable-advisor compared a session that delegated to cheaper workers against the same session working alone (v7.3.0, 2026-11-15, two runs per task). Delegating cost about 2.8× more on small tasks and about 12% more on one larger task, with the same pass rate. Most of the spend was the session's own overhead for specs, merges, and review, not the workers. No saving was measured at either size.
 
-**Keep the context lean.** Everything in the architect's context is re-read at architect prices on every turn. Delegate broad exploration, codebase searches, and log-grepping to a cheap read-only agent and keep only the conclusions; read files yourself only when the decision genuinely depends on the exact code. Don't paste long files, full diffs, or verbose command output into the conversation when a path reference or an excerpt will do.
+Delegation pays when:
 
-**Reason once, then hand off.** Do the hard thinking — the architecture, the interface design, the debugging hypothesis — in one pass, capture it in the spec, and let the cheap lane carry it from there. Re-deriving decisions across turns burns the premium twice.
+- the work is large next to its brief: a feature or test suite that would take you well beyond a few minutes, or the same mechanical edit across many files;
+- independent pieces can run at the same time;
+- a search would read many files whose contents you do not need afterwards. Give it to a read-only agent such as Explore and keep only the conclusion;
+- you want a judge that has not seen the work (`bar-judge`, `advisor`, a reviewer).
 
-What stays with the architect regardless of cost: decomposition, interface design, hypothesis selection when debugging, spec writing, lane routing, and judging verification evidence. Those tokens are what the premium is for — everything else is a candidate for delegation.
+It does not pay when:
 
-## The lanes
+- you can see the change and make it in fewer tokens than the brief would take: a one-line fix, a rename in a file you have already read, a small correction to a worker's diff;
+- the hard part is a judgment you would have to write out in full in the brief anyway;
+- you would read the same two or three files to write the brief as to make the change.
 
-| Lane | Producer | Invoke | Route here when |
-|---|---|---|---|
-| Routine | Sonnet | `implementer` agent (frontmatter default) | The spec fully determines the outcome: boilerplate, wiring, CRUD, mechanical edits, straightforward features. **Default lane.** |
-| Subtle | Opus | `implementer` with `model="opus"` | A Sonnet miss is expensive: concurrency, non-trivial algorithms, security-sensitive paths, hard debugging, wide-blast-radius refactors. |
-| Cross-vendor | GPT-5.5 | `codex-implementer` agent | Correctness/completeness is critical enough to want a different model family, or you want an independent implementation to compare against a Claude lane. Requires the codex CLI. |
-| Workstream | inherit | `feature-executor` agent — usually via `/parallel-feature` | The unit of work needs its own branch, PR, and CodeRabbit-approved Definition of Done. Not a sub-task — a shippable workstream. |
-| Judgment | Fable 5 | `advisor` agent | Not an implementation lane. See "Commitment boundaries" below. |
-| Adversarial check | inherit | `bar-judge` agent | Deciding whether output meets a written Done Bar. **Never the builder** — always a fresh context pointed at the real output. |
+If you keep patching one worker's output, the brief was missing a decision or the worker was the wrong model. Fix that, not the diff.
 
-Deciding rule: how much does the outcome depend on judgment the spec can't capture? None → Sonnet. Some, and mistakes are costly → Opus. When two lanes seem equal, take the cheaper one — you will verify anyway.
+**Workstream-sized work goes to `/parallel-feature`.** Anything that ships as its own PR with the team's Definition of Done belongs to `feature-executor`, normally through `/parallel-feature`, which owns Linear issues, worktree isolation, wave ordering, and review gates. Do not rebuild that machinery out of ad-hoc subagent calls. This skill covers pieces smaller than a workstream, in the current working tree.
 
-**Lane boundary vs `/parallel-feature`.** Implementer lanes are for sub-PR-sized tasks in the current working tree — pieces of a workstream the architect is assembling, quick fixes, mechanical changes. Anything that ships as its own PR with the team's Definition of Done is workstream-shaped: route it to `feature-executor`, normally through `/parallel-feature`, which owns Linear issues, worktree isolation, wave ordering, and review gates. This doctrine defers to `/parallel-feature` for that scale; don't rebuild its machinery out of implementer calls.
+**Write decisions down once.** Put the architecture, the interface choices, and the debugging hypothesis into the brief, so the worker does not have to re-derive them. Revisit a decision when a report, a test, or a review contradicts it, or when you see it was wrong.
 
-Opus vs codex is not a capability question — it's a failure-distribution question. Opus buys *more* capability within the same model family; codex buys a *different* family whose blind spots don't overlap Claude's. Route to codex when same-family review is the risk, or when you'll race both lanes and pick the stronger diff.
+## Choosing the model and effort
 
-If the codex lane returns `unavailable` or `timeout`, re-route the same spec to the Opus lane and say so explicitly in your report — never quietly absorb the downgrade, because the caller may have chosen that lane for vendor diversity.
+Pass `model` on every implementation call, and `effort` where the Agent tool accepts it. A subagent started without a model usually inherits the session's model, so an unpinned worker on a top-model session runs at top-model prices.
 
-## The spec contract
+- **The brief fully determines the outcome** (wiring, CRUD, mechanical edits, straightforward features): a smaller model such as `sonnet`, at low or medium effort.
+- **The outcome depends on judgment the brief cannot carry, and a miss is expensive** (concurrency, non-trivial algorithms, security-sensitive paths, hard debugging, wide refactors): a stronger model at high effort, or keep the piece yourself.
+- **A worker that fails once** gets a corrected brief. If it fails twice, move it to a stronger model or do it yourself.
 
-Implementers share none of your conversation context. Every delegation prompt carries all five parts:
+**A second model family.** Garage no longer ships its own Codex lane. If the OpenAI Codex plugin (`codex@openai-codex`) is installed, use it when a deliverable touches security-sensitive code, a migration, or an API shape and you want a check from outside the Claude family: `/codex:adversarial-review` on the diff, or `/codex:rescue` for an independent attempt at a problem. If the plugin is missing, say so instead of substituting a Claude subagent, because the point of asking was the different model family.
 
-1. **Objective** — what to build or change, one paragraph
-2. **Files** — exact paths to create or modify
-3. **Interfaces** — signatures, types, or API shapes the code must match
-4. **Constraints** — project conventions, things not to touch; include the brief's `## House Rules` verbatim when working from a brief
-5. **Verification** — the command(s) that prove it works
+## Briefing a worker: the five-part spec
 
-A spec you can't finish writing is a signal the decision isn't made yet — that's architect work, not a reason to hand the ambiguity to a cheaper model.
+A worker shares none of your conversation. Every implementation prompt carries all five parts. This is the same contract `/brief` writes for each workstream and `feature-executor` consumes.
 
-## Parallelism
+1. **Objective** — what to build or change, in one paragraph.
+2. **Files** — the exact paths to create or modify.
+3. **Interfaces** — the signatures, types, or API shapes the code must match.
+4. **Constraints** — project conventions and what not to touch. When working from a brief, include its `## House Rules` verbatim.
+5. **Verification** — the command or commands that prove it works.
 
-Independent specs (no shared files, no ordering dependency) launch as parallel agents in a single message. Sequential chains and single-file surgery stay serial. For high-stakes work, a pick-the-stronger-diff race — `implementer` and `codex-implementer` on the same spec, architect judges — buys cross-vendor confidence for one extra lane's cost.
+Also say what you want back, because the worker's final message is all you will see: the files it changed with a one-line summary each, the verification command it ran with the actual output, and every decision it made that the spec did not.
+
+If you cannot finish writing the spec, the decision is not made yet. Make it before you delegate.
+
+## Parallel work
+
+Independent specs (no shared files, no ordering dependency) can go out as parallel Agent calls in one message. Specs that touch the same files run one after another.
+
+## Checking what comes back
+
+A report is a claim, not evidence. Before you accept a worker's result:
+
+- read the diff. An empty diff means nothing was done, whatever the report says;
+- re-run the verification command, or check the quoted output against the working tree;
+- treat a report with no command output as not done;
+- answer a reported spec gap with a corrected spec, not with "use your judgment". The gap is a decision that belongs to you.
 
 ## Commitment boundaries
 
-Consult `advisor` (read-only, verdict in under 300 words) at the moments that decide whether the next hour is wasted:
+Consult `advisor` (read-only, verdict in under 300 words) when a wrong call would waste the next stretch of work:
 
-- Before committing to an architecture, data migration, API shape, or refactor strategy
-- Whenever the same problem has resisted two distinct attempts
-- Once before declaring a multi-step deliverable done
+- before committing to an architecture, data migration, API shape, or refactor strategy;
+- when the same problem has resisted two distinct attempts;
+- once before declaring a multi-step deliverable done.
 
-Pass it the decision, the constraints, and the options considered. Act on the verdict or surface the disagreement — never silently ignore it. (If the session itself already runs on the top model, the advisor still earns its keep as a context-clean skeptic reading the actual code.)
+Give it the decision, the constraints, and the options you considered. Act on the verdict, or tell the user where you disagree and why. When the session already runs on the top model, the advisor is the same model with a clean context: it still catches what the conversation's assumptions hid, but it is not a second model's opinion.
 
 ## Loop posture (loop-until-bar)
 
-For briefs marked `Posture: loop` — a single scoped deliverable with a crisp, runnable Done Bar (often creative or foundational work) — run this cycle from the main session:
+For briefs marked `Posture: loop` — a single scoped deliverable with a crisp, runnable Done Bar — run this cycle from the main session:
 
-1. Write the 5-part spec from the brief (House Rules verbatim in Constraints; the Done Bar drives Verification).
-2. Route to a lane and verify the lane's evidence per the rules below.
-3. Spawn `bar-judge` — fresh context, context-free prompt: the brief's `## Done Bar` plus a pointer to the real output. Never the lane that built it.
-4. `BAR VERDICT: MET` → done. `BAR VERDICT: NOT MET` → send a **corrected spec** back to the same lane, quoting the judge's failure evidence as new constraints. Go to 2.
-5. Cap at **3 cycles**. Still NOT MET → consult `advisor` with the spec, the failures, and what was tried; act on its verdict or surface to the user.
+1. **Build toward the Done Bar.** Do the work yourself or delegate pieces of it, as the costs above suggest. Any spec you hand to a worker carries the brief's House Rules verbatim, and its Verification comes from the Done Bar.
+2. **Check the evidence** as described above, for delegated pieces and for your own.
+3. **Spawn `bar-judge`** in a fresh context, with a prompt that contains only the brief's `## Done Bar` and a pointer to the real output.
+4. **`BAR VERDICT: MET`** → done. **`BAR VERDICT: NOT MET`** → fix what the judge's evidence shows failed, then go to 2.
+5. **Stop after 3 cycles.** If the bar is still not met, consult `advisor` with the bar, the failures, and what was tried. Act on its verdict or bring the decision to the user.
 
-The builder never decides it's finished — the judge does, or the user does.
-
-## Verification
-
-Reports are claims, not evidence. Before accepting any lane's work: read the diff, and re-run the verification command (or spot-check its quoted output against the working tree). "Should work", "tests should pass", or a report with no command output means the task is not done. An implementer that reports a spec gap gets a corrected spec, not a "use your judgment".
+Whoever built the output does not decide that it is finished. The judge does, or the user does.
