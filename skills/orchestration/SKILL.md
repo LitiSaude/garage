@@ -11,7 +11,7 @@ The session owns the requirements, the design, the specs, and the judgment of ev
 
 Garage ships no implementer agent. When you delegate implementation, use Claude Code's built-in general-purpose subagent through the Agent tool, and choose the model and effort on the call.
 
-The principles behind the harness are in [`../brief/reference/principles.md`](../brief/reference/principles.md).
+The principles behind the harness are in `${CLAUDE_PLUGIN_ROOT}/skills/brief/reference/principles.md`. Garage's agents are registered under the plugin namespace: spawn them as `liti-garage:advisor`, `liti-garage:bar-judge`, and `liti-garage:feature-executor`.
 
 ## What delegation costs, and when it pays
 
@@ -35,7 +35,7 @@ It does not pay when:
 
 If you keep patching one worker's output, the brief was missing a decision or the worker was the wrong model. Fix that, not the diff.
 
-**Workstream-sized work goes to `/parallel-feature`.** Anything that ships as its own PR with the team's Definition of Done belongs to `feature-executor`, normally through `/parallel-feature`, which owns Linear issues, worktree isolation, wave ordering, and review gates. Do not rebuild that machinery out of ad-hoc subagent calls. This skill covers pieces smaller than a workstream, in the current working tree.
+**Workstream-sized work goes to `/liti-garage:parallel-feature`.** Anything that ships as its own PR with the team's Definition of Done belongs to `feature-executor`, normally through `/liti-garage:parallel-feature`, which owns Linear issues, worktree isolation, wave ordering, and review gates. Do not rebuild that machinery out of ad-hoc subagent calls. This skill covers pieces smaller than a workstream, in the current working tree.
 
 **Write decisions down once.** Put the architecture, the interface choices, and the debugging hypothesis into the brief, so the worker does not have to re-derive them. Revisit a decision when a report, a test, or a review contradicts it, or when you see it was wrong.
 
@@ -51,7 +51,7 @@ Pass `model` on every implementation call, and `effort` where the Agent tool acc
 
 ## Briefing a worker: the five-part spec
 
-A worker shares none of your conversation. Every implementation prompt carries all five parts. This is the same contract `/brief` writes for each workstream and `feature-executor` consumes.
+A worker shares none of your conversation. Every implementation prompt carries all five parts. This is the same contract `/liti-garage:brief` writes for each workstream and `feature-executor` consumes.
 
 1. **Objective** — what to build or change, in one paragraph.
 2. **Files** — the exact paths to create or modify.

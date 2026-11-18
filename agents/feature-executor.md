@@ -16,7 +16,7 @@ Your spawn prompt should carry:
 
 1. **The five-part workstream spec** — Objective, Files, Interfaces, Constraints, Verification (from a brief's `### WS-<n>:` block, or synthesized by the orchestrator).
 2. **House Rules** — the brief's standing constraints, copied verbatim. These are non-negotiable and **additive** to the host repo's own docs — where both speak, satisfy both; where they conflict, stop and flag it.
-3. **The Linear issue and its `gitBranchName`.**
+3. **The Linear issue and its `gitBranchName`** — or, when the orchestrator states that the user chose to run without Linear, the branch name the user approved.
 4. **A pointer to the full spec/brief** for context.
 
 If parts are missing, orient yourself from the spec pointer and the host repo, and flag the gaps in your report rather than guessing silently.
@@ -33,7 +33,7 @@ Before writing any code:
 
 You are NOT done until every one of these has happened, in this order:
 
-1. **Branch** — named after the Linear issue's `gitBranchName` for this workstream (the issue is assumed to already exist; if it doesn't, stop and flag it rather than inventing a branch name).
+1. **Branch** — named after the Linear issue's `gitBranchName` for this workstream, or the user-approved branch name your prompt carries when the run has no Linear. If you were given neither, stop and flag it rather than inventing a branch name.
 2. **Scenario matrix as a written artifact** — before or alongside writing tests, produce the 5-row scenario matrix: Happy path, Error path, Unusual-but-valid input, Edge case, Invalid input. Every row must resolve to either at least one real test, or an explicit "N/A — reason" if it truly doesn't apply. A bare list of test names without this matrix is not acceptable — it's the artifact that proves error/edge coverage wasn't skipped. Layer in any additional repo-specific matrices the host repo's docs require for the kind of code you're touching (for example, pygeia demands a 7-scenario partner-scope matrix for any interactor that reads a scoped repository — that's an instance of the general rule "follow whatever matrices this repo's testing docs demand," not a hardcoded requirement of this agent).
 3. **100% test coverage of new/changed code, suite green** — using the host repo's own test idiom and tooling. Modifying existing behavior requires new assertions, not just updated fixtures/mocks to keep old tests passing.
 4. **PR opened via the host repo's PR skill** — never a hand-rolled `gh pr create` if a skill exists for this.

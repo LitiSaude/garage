@@ -1,6 +1,6 @@
 ---
 name: visualize-plan
-description: Generate a "visual companion" for one or more PRD/TRD markdown files. Long specs become a multi-page mini-site with a sticky side menu (folder of self-contained HTML files); short specs become a single-page HTML. Both follow the Liti mobile design system and a fixed page-shell template so visuals stay consistent across the team. USE WHEN the user asks to visualize a plan/PRD/TRD/brief, wants a "visual companion" or stakeholder-readable HTML view of a spec, or after a gated `/brief` before `/parallel-feature`. Not for bug-fix tickets, pure SQL migrations, or code reviews.
+description: Generate a "visual companion" for one or more PRD/TRD markdown files. Long specs become a multi-page mini-site with a sticky side menu (folder of self-contained HTML files); short specs become a single-page HTML. Both follow the Liti mobile design system and a fixed page-shell template so visuals stay consistent across the team. USE WHEN the user asks to visualize a plan/PRD/TRD/brief, wants a "visual companion" or stakeholder-readable HTML view of a spec, or after a gated `/liti-garage:brief` and before `/liti-garage:parallel-feature`. Not for bug-fix tickets, pure SQL migrations, or code reviews.
 ---
 
 # /visualize-plan — Visual Companion for PRD/TRD Markdown
@@ -10,7 +10,7 @@ Turn a markdown plan into a focused review surface — a multi-page mini-site fo
 ## Usage
 
 - `/visualize-plan <path-to-md> [<path-to-md> ...]` — explicit input(s).
-- `/visualize-plan` — no args: scan `docs/specs/**/*.md` from the current branch's diff against the default branch (`git merge-base HEAD origin/HEAD`; fall back to `main`) and ask the user which to include.
+- `/visualize-plan` — no args: scan `docs/specs/**/*.md` from the current branch's diff against the default branch (`git merge-base HEAD origin/HEAD`) and ask the user which to include. If `origin/HEAD` is unset, find the default branch with `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name`; if that also fails, ask the user instead of assuming `main`.
 
 ## When to use vs. NOT
 
